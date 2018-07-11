@@ -1,58 +1,47 @@
 var MainLayer = cc.Layer.extend({
+    _map: null,
     ctor:function () {
         this._super();
-        // var color = new cc.LayerColor(cc.color(64, 64, 64, 255));
-        // this.addChild(color, -1);
-        var map = new cc.TMXTiledMap("res/Art/Map/42x42map.tmx");
-        this.addChild(map, 0, "TILEMAP");
-        map.anchorX = 0;
-        map.anchorY = 0;
-        map.scale = 0.3;
-        var ms = map.getMapSize();
-        var ts = map.getTileSize();
-        // map.x = -ms.width * ts.width * map.scale/ 2;
-        // map.y =  -ms.height * ts.height * map.scale / 2;
-
-        // map.runAction(cc.moveTo(1.0, cc.p(-ms.width * ts.width / 2, -ms.height * ts.height / 2)));
+        this._map = new Map();
+        // cc.log(cc.winSize.height);
+        // cc.log(this._map._height);
+        this.addChild(this._map, 0, "MAP");
+        this.init();
     },
 
 
     init: function() {
-        // this.background = new cc.Sprite(res.background_png);
-        // this.background.x = cc.winSize.width/2;
-        // // this.background.y = cc.winSize.height/2;
-        // // this.center_point.x = this.background.x;
-        // // this.center_point.y = this.background.y;
-        // this.background.setScale(cc.winSize.width/this.background.width, cc.winSize.height/this.background.height);
-        // cc.log("Init pos: " + this.background.width  + " " + this.background.height );
-        // this.addChild(this.background);
-        // this.addTouchListener();
+        // var centering = cc.MoveTo(0.5, cc.p(this._map.width/2 - cc.winSize.width/2, this._map.height/2 - cc.winSize.height/2));
+        // this._map.runAction(centering);
+        this.moveMap();
     },
 
-    addTouchListener: function(){
+    moveMap: function() {
         var self = this;
+        var maxX = 0;
+        var maxY = 0;
+
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             onTouchBegan: function(touch, event) {
-                var startX, startY;
-                startX = touch.getLocation().x;
-                startY = touch.getLocation().y;
-                var offsetX = cc.winSize.width/2 - startX;
-                var offsetY = Math.abs(cc.winSize.height/2 - startY);
-                self.background.scaleX *= 2;
-                self.background.scaleY *= 2;
-                var move = cc.MoveTo(0.5, cc.p())
-                // cc.log(cc.winSize.width* + " " + cc.winSize.height);
-                // cc.log("Init pos: " + self.background.width*self.background.scaleX  + " " + self.background.height*self.background.scaleY );
                 return true;
             },
             onTouchMoved: function(touch, event) {
                 var delta = touch.getDelta();
-                var curPos = cc.p(self.background.x, self.background.y);
+                var curPos = cc.p(self._map.x, self._map.y);
                 curPos = cc.pAdd(curPos, delta);
-                self.background.x = curPos.x;
-                self.background.y = curPos.y;
-                cc.log("Updated Pos: " + self.background.x  + " " + self.background.y );
+                self._map.x = curPos.x;
+                self._map.y = curPos.y;
+
+                self._map.x = self._map.x >= 0 ? 0 : self._map.x;
+                self._map.y = self._map.y >= 0 ? 0 : self._map.y;
+
+                self._map.x = self._map.x >= cc.winSize.width - self._map._width ? self._map.x : cc.winSize.width - self._map._width;
+                self._map.y = self._map.y >= cc.winSize.height - self._map._height + 42 ? self._map.y : cc.winSize.height - self._map._height + 42 ;
+
+                // cc.log(self._map.y);
+                // cc.log(self._map.x >= cc.winSize.width - self._map._width);
+
                 curPos = null;
             },
             onTouchEnded: function(touch, event) {
@@ -60,7 +49,6 @@ var MainLayer = cc.Layer.extend({
             }
         }, this)
     }
-
 
 });
 

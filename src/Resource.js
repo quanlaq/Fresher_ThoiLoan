@@ -1,7 +1,7 @@
-var mapFolder = "res/Art/Map";
-var buildingsFolder = "res/Art/Buildings";
-var effectsFolder = "res/Art/Effects";
-var guiFolder = "res/Art/GUIs";
+var mapFolder = "res/Art/Map/";
+var buildingsFolder = "res/Art/Buildings/";
+var effectsFolder = "res/Art/Effects/";
+var guiFolder = "res/Art/GUIs/";
 
 var res = {
     tilemap_tmx: mapFolder + "42x42map.tmx",

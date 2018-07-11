@@ -15,6 +15,7 @@
         "src/**/*.js"
     ],
     "jsList": [
+        "src/Config/Config.js",
         "src/Layer/MainLayer.js",
         "src/Layer/Map.js",
         "src/Resource.js"
