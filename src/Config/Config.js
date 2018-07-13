@@ -1,6 +1,6 @@
 var cf = cf || {};
 
-cf.SCALE = 0.6;
+cf.SCALE = 1;
 
 cf.bgSCALE = cf.SCALE*2;
 
@@ -13,4 +13,6 @@ cf.tileSize = {
 
 cf.offsetX = 40*cf.SCALE;
 
-cf.buildingScale = 115/100*cf.SCALE;
+cf.buildingScale = cf.SCALE;
+
+cf.tileLocation = [];

@@ -11,10 +11,12 @@ var MainLayer = cc.Layer.extend({
 
 
     init: function() {
-        var centering = cc.MoveTo(1, cc.p(-this._map._width/2 + cc.winSize.width/2, -this._map._height/2 + cc.winSize.height/2));
-        this._map.runAction(centering);
-        // this.moveMap();
-        this.zoomMap(1.1)
+        var centering = cc.p(-this._map._width/2 + cc.winSize.width/2, -this._map._height/2 + cc.winSize.height/2)
+        this._map.setPosition(centering);
+        this.moveMap();
+
+        // this.zoomMap(1.1)
+        // this.touchHandler();
     },
 
     moveMap: function() {
@@ -23,11 +25,12 @@ var MainLayer = cc.Layer.extend({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             onTouchBegan: function(touch, event) {
                 var loc = touch.getLocation();
+
                 // cc.log(self._map.x + " " + self._map.y);
                 // cc.log(loc.x + " " + loc.y);
                 var locInNodex = loc.x - self._map.x;
                 var locInNodey = loc.y - self._map.y;
-                cc.log(locInNodex + " " + locInNodey);
+                cc.log("click " + locInNodex + " " + locInNodey);
                 return true;
             },
             onTouchMoved: function(touch, event) {

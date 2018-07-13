@@ -3,7 +3,7 @@ cc.game.onStart = function(){
     // Adjust viewport meta
     cc.view.adjustViewPort(true);
     // Set up the resolution policy and design resolution size
-    cc.view.setDesignResolutionSize(1024, 768, cc.ResolutionPolicy.SHOW_ALL);
+    cc.view.setDesignResolutionSize(1280, 720, cc.ResolutionPolicy.SHOW_ALL);
     // The game will be resized when browser size changes
     cc.view.resizeWithBrowserSize(true);
     //load resources

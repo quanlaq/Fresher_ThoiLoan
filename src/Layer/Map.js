@@ -11,26 +11,55 @@ var Map = cc.Node.extend({
        this.init();
    },
 
-    init: function(){
-        this.loadTileMap();
-        this.loadBackground();
-        // cc.log(this._bgBotLeft.height + this._bgBotRight.height);
-        this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
-        this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
-        var builderHut = new cc.Sprite(res.builderHut);
-        builderHut.attr({
-            anchorX: 0.5,
-            anchorY: 0.5,
-            x: cf.tileSize.width*21 + this._tileMap.x,
-            y: cf.tileSize.height*20 + this._tileMap.y,
-            // opacity: 255*30/100,
-            scale: cf.buildingScale
-            // x: this._tileMap.x + cf.offsetX + 39.5*
-        });
-        this.addChild(builderHut, 1);
-        // this.moveMap();
+        init: function(){
+
+            this.loadTileMap();
+            this.loadBackground();
+            this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
+            this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
+            this.initTileLocation();
+            var builderHut = new cc.Sprite(res.builderHut);
+            builderHut.attr({
+                anchorX: 0.5,
+                anchorY: 0.5,
+                x: cf.tileLocation[20][20].x,
+                y: cf.tileLocation[20][20].y + (2/2-0.5)*cf.tileSize.height*cf.SCALE,
+                // opacity: 255*30/100,
+                scale: cf.buildingScale
+            });
+            this.addChild(builderHut, 1);
+            // this.moveMap();
     },
 
+    initTileLocation: function(){
+        cf.tileLocation.push([0]);
+        var mapLayer = this._tileMap.getLayer("bg2");
+        for (var i = 1; i <= 40; i++)
+        {
+            var arr_pos = [];
+            for(var k = 0; k<=40; k++) arr_pos.push(k);
+            for ( var j = 1; j <= 40; j++)
+            {
+                r = i;
+                c = j;
+                var pos = null;
+                if ((r+c) % 2 === 0)
+                {
+                    var current_tile = mapLayer.getTileAt(r, c);
+                    pos = cc.p(current_tile.x + 0.5 * cf.tileSize.width,current_tile.y + 0.5 * cf.tileSize.height );
+                    var posInWorld = cc.p(pos.x*this._tileMap.scale + this._tileMap.x, pos.y*this._tileMap.scale + this._tileMap.y);
+                }
+                else
+                {
+                    current_tile = mapLayer.getTileAt(r + 1, c);
+                    pos = cc.p(current_tile.x,current_tile.y + cf.tileSize.height );
+                    posInWorld = cc.p(pos.x*this._tileMap.scale + this._tileMap.x, pos.y*this._tileMap.scale + this._tileMap.y);
+                }
+                arr_pos[j] = posInWorld;
+            }
+            cf.tileLocation.push(arr_pos);
+        }
+    },
 
     loadTileMap: function(){
         this._tileMap = new cc.TMXTiledMap("res/Art/Map/42x42map.tmx");
@@ -57,8 +86,8 @@ var Map = cc.Node.extend({
            y:0,
            anchorX: 0,
            anchorY: 0,
+            opacity: 128,
             scale: cf.bgSCALE
-            // opacity: 128
         });
 
         this._bgBotRight.attr({
@@ -66,8 +95,8 @@ var Map = cc.Node.extend({
             y:0,
             anchorX: 0,
             anchorY: 0,
+            opacity: 128,
             scale: cf.bgSCALE
-            // opacity: 128
         });
 
         this._bgTopLeft.attr({
@@ -75,8 +104,8 @@ var Map = cc.Node.extend({
             y:(this._bgBotLeft.height )* cf.bgSCALE,
             anchorX: 0,
             anchorY: 0,
+            opacity: 128,
             scale: cf.bgSCALE
-            // opacity: 128
         });
 
         this._bgTopRight.attr({
@@ -84,8 +113,8 @@ var Map = cc.Node.extend({
             y:(this._bgBotLeft.height)* cf.bgSCALE,
             anchorX: 0,
             anchorY: 0,
+            opacity: 128,
             scale: cf.bgSCALE
-            // opacity: 128
         });
 
     },
