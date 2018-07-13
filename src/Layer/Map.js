@@ -14,14 +14,20 @@ var Map = cc.Node.extend({
     init: function(){
         this.loadTileMap();
         this.loadBackground();
-        cc.log(this._bgBotLeft.height + this._bgBotRight.height);
+        // cc.log(this._bgBotLeft.height + this._bgBotRight.height);
         this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
         this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
-        // var w = this._tileMap.width * cf.SCALE, h = this._tileMap.height * cf.SCALE;
-        // var rect = new cc.DrawNode();
-        // rect.drawRect(cc.p(this._tileMap.x + 40*cf.SCALE,this._tileMap.y), cc.p(this._tileMap.x + w - 40*cf.SCALE,this._tileMap.y+h), cc.color(0,0,0,0), 2, cc.color(0,255,0,255));
-        // cc.log(this._tileMap.width + " " + this._tileMap.height);
-        // this.addChild(rect);
+        var builderHut = new cc.Sprite(res.builderHut);
+        builderHut.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cf.tileSize.width*21 + this._tileMap.x,
+            y: cf.tileSize.height*20 + this._tileMap.y,
+            // opacity: 255*30/100,
+            scale: cf.buildingScale
+            // x: this._tileMap.x + cf.offsetX + 39.5*
+        });
+        this.addChild(builderHut, 1);
         // this.moveMap();
     },
 
@@ -52,6 +58,7 @@ var Map = cc.Node.extend({
            anchorX: 0,
            anchorY: 0,
             scale: cf.bgSCALE
+            // opacity: 128
         });
 
         this._bgBotRight.attr({
@@ -60,6 +67,7 @@ var Map = cc.Node.extend({
             anchorX: 0,
             anchorY: 0,
             scale: cf.bgSCALE
+            // opacity: 128
         });
 
         this._bgTopLeft.attr({
@@ -68,6 +76,7 @@ var Map = cc.Node.extend({
             anchorX: 0,
             anchorY: 0,
             scale: cf.bgSCALE
+            // opacity: 128
         });
 
         this._bgTopRight.attr({
@@ -76,6 +85,7 @@ var Map = cc.Node.extend({
             anchorX: 0,
             anchorY: 0,
             scale: cf.bgSCALE
+            // opacity: 128
         });
 
     },

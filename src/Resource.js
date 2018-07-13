@@ -8,7 +8,8 @@ var res = {
     bgTopLeft: mapFolder + "1_0000_Layer-3.png",
     bgBotLeft: mapFolder + "1_0001_Layer-1.png",
     bgTopRight: mapFolder + "1_0002_Layer-4.png",
-    bgBotRight: mapFolder + "1_0003_Layer-2.png"
+    bgBotRight: mapFolder + "1_0003_Layer-2.png",
+    builderHut: buildingsFolder + "builder hut/idle/image0000.png"
 };
 
 var g_preload= [
@@ -16,5 +17,6 @@ var g_preload= [
     res.bgBotLeft,
     res.bgBotRight,
     res.bgTopLeft,
-    res.bgTopRight
+    res.bgTopRight,
+    res.builderHut
 ];

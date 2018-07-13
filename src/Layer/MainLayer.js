@@ -11,19 +11,23 @@ var MainLayer = cc.Layer.extend({
 
 
     init: function() {
-        // var centering = cc.MoveTo(0.5, cc.p(this._map.width/2 - cc.winSize.width/2, this._map.height/2 - cc.winSize.height/2));
-        // this._map.runAction(centering);
-        this.moveMap();
+        var centering = cc.MoveTo(1, cc.p(-this._map._width/2 + cc.winSize.width/2, -this._map._height/2 + cc.winSize.height/2));
+        this._map.runAction(centering);
+        // this.moveMap();
+        this.zoomMap(1.1)
     },
 
     moveMap: function() {
         var self = this;
-        var maxX = 0;
-        var maxY = 0;
-
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             onTouchBegan: function(touch, event) {
+                var loc = touch.getLocation();
+                // cc.log(self._map.x + " " + self._map.y);
+                // cc.log(loc.x + " " + loc.y);
+                var locInNodex = loc.x - self._map.x;
+                var locInNodey = loc.y - self._map.y;
+                cc.log(locInNodex + " " + locInNodey);
                 return true;
             },
             onTouchMoved: function(touch, event) {
@@ -42,10 +46,38 @@ var MainLayer = cc.Layer.extend({
                 // cc.log(self._map.y);
                 // cc.log(self._map.x >= cc.winSize.width - self._map._width);
 
+                // cc.log(self.convertToWorldSpace().x + " " + self.convertToWorldSpace().y);
+                //
+                // cc.log(self._map.x + " " + self._map.y);
+
                 curPos = null;
             },
             onTouchEnded: function(touch, event) {
                 return true;
+            }
+        }, this)
+    },
+
+    zoomMap: function(scale) {
+        var self = this;
+        var touchLocation;
+        var curPosInMap;
+        var newPosInMap;
+        var newMapPos;
+        cc.eventManager.addListener({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            onTouchBegan: function(touch, event) {
+                touchLocation = touch.getLocation();
+                curPosInMap = cc.p(touchLocation.x - self._map.x, touchLocation.y - self._map.y);
+                newPosInMap = cc.p(curPosInMap.x*scale, curPosInMap.y*scale);
+                newMapPos = cc.p(touchLocation.x - newPosInMap.x, touchLocation.y - newPosInMap.y);
+                return true;
+            },
+            onTouchMoved: function(touch, event) {
+            },
+            onTouchEnded: function(touch, event) {
+                self._map.setPosition(newMapPos);
+                self._map.scale *= scale;
             }
         }, this)
     }
