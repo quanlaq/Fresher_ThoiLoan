@@ -18,6 +18,8 @@
         "src/Config/Config.js",
         "src/Layer/MainLayer.js",
         "src/Layer/Map.js",
+        "src/Layer/Shop/Shop.js",
+        "src/Layer/Shop/ShopCategory.js",
         "src/Resource.js"
     ]
 }

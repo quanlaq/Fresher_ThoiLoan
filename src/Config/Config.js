@@ -1,6 +1,6 @@
 var cf = cf || {};
 
-cf.SCALE = 1;
+cf.SCALE = 0.5;
 
 cf.bgSCALE = cf.SCALE*2;
 

@@ -86,7 +86,7 @@ var Map = cc.Node.extend({
            y:0,
            anchorX: 0,
            anchorY: 0,
-            opacity: 128,
+            // opacity: 128,
             scale: cf.bgSCALE
         });
 
@@ -95,7 +95,7 @@ var Map = cc.Node.extend({
             y:0,
             anchorX: 0,
             anchorY: 0,
-            opacity: 128,
+            // opacity: 128,
             scale: cf.bgSCALE
         });
 
@@ -104,7 +104,7 @@ var Map = cc.Node.extend({
             y:(this._bgBotLeft.height )* cf.bgSCALE,
             anchorX: 0,
             anchorY: 0,
-            opacity: 128,
+            // opacity: 128,
             scale: cf.bgSCALE
         });
 
@@ -113,7 +113,7 @@ var Map = cc.Node.extend({
             y:(this._bgBotLeft.height)* cf.bgSCALE,
             anchorX: 0,
             anchorY: 0,
-            opacity: 128,
+            // opacity: 128,
             scale: cf.bgSCALE
         });
 
