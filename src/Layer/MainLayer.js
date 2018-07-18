@@ -14,21 +14,27 @@ var MainLayer = cc.Layer.extend({
         this.init();
     },
 
-
     init: function() {
         var centering = cc.p(-this._map._width/2 + cc.winSize.width/2, -this._map._height/2 + cc.winSize.height/2);
         this._map.setPosition(centering);
         this.moveMap();
         this.initMainGUI();
+        var shopCat = new ShopCategory(cf.shopType.army);
         this._shop = new Shop();
-        this.addChild(this._shop);
+        this.addChild(this._shop, 10);
     },
 
     initMainGUI: function() {
-
         this.addShopButton();
         this.addSettingButton();
         this.addInventoryButton();
+        this.addAttackButton();
+        this.addResourceBar();
+        this.addUserInfo();
+    },
+
+    log: function(){
+      cc.log("test");
     },
 
     addShopButton: function(){
@@ -47,7 +53,19 @@ var MainLayer = cc.Layer.extend({
         title.setPosition(cc.p(shopButton.width/2, title.height/2 + 3));
         shopButton.addTouchEventListener(this.openShop, this);
         shopButton.addChild(title);
-        this.addChild(shopButton, 10, SHOP_BUTTON_TAG);
+        this.addChild(shopButton, 1, SHOP_BUTTON_TAG);
+    },
+
+    addAttackButton: function() {},
+
+    //gold,dElixir, Elixir, G visualize
+    addResourceBar: function() {
+
+    },
+
+    //Exp, Trophy, Username, UserInfo
+    addUserInfo: function() {
+
     },
 
     addSettingButton: function() {
@@ -57,7 +75,7 @@ var MainLayer = cc.Layer.extend({
         settingButton.loadTextures(mainGUI.setting, mainGUI.setting);
         settingButton.setAnchorPoint(cc.p(0.5, 0.5));
         settingButton.setPosition(cc.p(cc.winSize.width - settingButton.width/2*settingButton.scale - 5 , shopButton.y + shopButton.height/2*shopButton.scale + settingButton.height/2*settingButton.scale));
-        this.addChild(settingButton, 10, SETTING_BUTTON_TAG);
+        this.addChild(settingButton, 1, SETTING_BUTTON_TAG);
         settingButton.addTouchEventListener(this.openSetting, this);
     },
 
@@ -69,7 +87,7 @@ var MainLayer = cc.Layer.extend({
         inventoryButton.loadTextures(mainGUI.inventory, mainGUI.inventory);
         inventoryButton.setAnchorPoint(cc.p(0.5, 0.5));
         inventoryButton.setPosition(cc.p(cc.winSize.width - inventoryButton.width/2*inventoryButton.scale - 5 , settingButton.y + settingButton.height/2*settingButton.scale + inventoryButton.height/2*inventoryButton.scale));
-        this.addChild(inventoryButton, 10, INVENTORY_BUTTON_TAG);
+        this.addChild(inventoryButton, 1, INVENTORY_BUTTON_TAG);
         inventoryButton.addTouchEventListener(this.openInventory, this);
     },
 
@@ -143,20 +161,21 @@ var MainLayer = cc.Layer.extend({
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 sender.setScale(sender.scale*1.1);
-                cc.log("Open shop");
-                if(!this._shop._isOpen) this._shop.onAppear();
-                else if(this._shop._isOpen) this._shop.onDisappear();
                 break;
             case ccui.Widget.TOUCH_MOVED:
-                cc.log("moved");
                 break;
             case ccui.Widget.TOUCH_ENDED:
                 sender.setScale(sender.scale/1.1);
-                cc.log("ended");
+                cc.log("shop opened");
+                if(!this._shop.visible) {
+                    this._shop.onAppear();
+                }
+                else if(this._shop.visible) {
+                    this._shop.onDisappear();
+                }
                 break;
             case ccui.Widget.TOUCH_CANCELED:
                 sender.setScale(sender.scale/1.1);
-                cc.log("canceled");
                 break;
         }
     },
