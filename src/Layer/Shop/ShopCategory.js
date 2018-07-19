@@ -7,37 +7,37 @@ var ShopCategory = ccui.Button.extend({
     ctor: function(type){
         this._super();
         this.loadTextures(shopGUI.slotCatalogy, shopGUI.slotCatalogy);
-        this._title = cc.LabelBMFont.create('QUÂN ĐỘI',  font.soji20);
+        this._title = cc.LabelBMFont.create(cf.shopType.army.str,  font.soji20);
         var tp;
         switch(type){
             case cf.shopType.army.name:
                 tp=shopGUI.typeArmy;
-                this._title.setString("QUÂN ĐỘI");
+                this._title.setString(cf.shopType.army.str);
                 this._tag = cf.shopType.army.tag;
                 break;
             case cf.shopType.res.name:
                 tp=shopGUI.typeRes;
-                this._title.setString("TÀI NGUYÊN");
+                this._title.setString(cf.shopType.res.str);
                 this._tag = cf.shopType.res.tag;
                 break;
             case cf.shopType.shield.name:
                 tp=shopGUI.typeShield;
-                this._title.setString("BẢO VỆ");
+                this._title.setString(cf.shopType.shield.str);
                 this._tag = cf.shopType.shield.tag;
                 break;
             case cf.shopType.dc.name:
                 tp=shopGUI.typeDC;
-                this._title.setString("TRANG TRÍ");
+                this._title.setString(cf.shopType.dc.str);
                 this._tag = cf.shopType.dc.tag;
                 break;
             case cf.shopType.defense.name:
                 tp=shopGUI.typeDefense;
-                this._title.setString("PHÒNG THỦ");
+                this._title.setString(cf.shopType.defense.str);
                 this._tag = cf.shopType.defense.tag;
                 break;
             case cf.shopType.buyRes.name:
                 tp=shopGUI.typeBuyRes;
-                this._title.setString("NGÂN KHỐ");
+                this._title.setString(cf.shopType.buyRes.str);
                 this._tag = cf.shopType.buyRes.tag;
                 break;
             default:
@@ -86,18 +86,23 @@ var ShopCategory = ccui.Button.extend({
     },
 
     getList: function(sender, type){
-        switch (type){
-            case ccui.Widget.TOUCH_BEGAN:
-                sender.scale = 1.55;
-                break;
-            case ccui.Widget.TOUCH_MOVED:
-                break;
-            case ccui.Widget.TOUCH_ENDED:
-                sender.scale = 1.5;
-                var shopItem = new ShopItemList(sender.getTag());
-                this.getParent().getParent().addChild(shopItem);
-                this.getParent().onDisappear();
-                break;
+                switch (type){
+                    case ccui.Widget.TOUCH_BEGAN:
+                        sender.scale = 1.55;
+                        break;
+                    case ccui.Widget.TOUCH_MOVED:
+                        break;
+                    case ccui.Widget.TOUCH_ENDED:
+                        sender.scale = 1.5;
+                        var mainLayer = this.getParent().getParent();
+                        var shopItem;
+                        if (mainLayer.getChildByTag(cf.getCategoryTag(sender.getTag())) === null) {
+                            shopItem = new ShopItemList(sender.getTag());
+                            mainLayer.addChild(shopItem, 10, cf.getCategoryTag(sender.getTag()));
+                        } else shopItem = mainLayer.getChildByTag(cf.getCategoryTag(sender.getTag()));
+                        shopItem.onAppear();
+                        this.getParent().onDisappear();
+                        break;
             case ccui.Widget.TOUCH_CANCELED:
                 sender.scale = 1.5;
                 break;

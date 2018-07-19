@@ -20,6 +20,7 @@
         "src/Layer/Map.js",
         "src/Layer/Shop/Shop.js",
         "src/Layer/Shop/ShopCategory.js",
+        "src/Layer/Shop/ShopItem.js",
         "src/Layer/Shop/ShopItemList.js",
         "src/Resource.js"
     ]

@@ -3,6 +3,7 @@ var buildingsFolder = "res/Art/Buildings/";
 var effectsFolder = "res/Art/Effects/";
 var fontFolder = "res/Art/Fonts/";
 var guiFolder = "res/Art/GUIs/";
+var jsonFolder = "res/ConfigJson/";
 
 var res = {
     tilemap_tmx:    mapFolder + "42x42map.tmx",
@@ -10,7 +11,18 @@ var res = {
     bgBotLeft:      mapFolder + "1_0001_Layer-1.png",
     bgTopRight:     mapFolder + "1_0002_Layer-4.png",
     bgBotRight:     mapFolder + "1_0003_Layer-2.png",
-    builderHut:     buildingsFolder + "builder hut/idle/image0000.png"
+    builderHut:     buildingsFolder + "builder hut/idle/image0000.png",
+
+    armyCampJson: jsonFolder + "ArmyCamp.json",
+    barrackJson: jsonFolder + "Barrack.json",
+    builderHutJson: jsonFolder + "BuilderHut.json",
+    initGameJson: jsonFolder + "InitGame.json",
+    laboratoryJson: jsonFolder + "Laboratory.json",
+    resourceJson: jsonFolder + "Resource.json",
+    storageJson: jsonFolder + "Storage.json",
+    townHallJson: jsonFolder + "TownHall.json",
+    troopJson: jsonFolder + "Troop.json",
+    troopBaseJson: jsonFolder + "TroopBase.json"
 };
 
 var font = {

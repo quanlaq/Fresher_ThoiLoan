@@ -17,7 +17,7 @@ var Shop = cc.Layer.extend({
         this._titleBackground.setAnchorPoint(cc.p(0, 0));
         this._titleBackground.setPosition(cc.p(0, cc.winSize.height - this._titleBackground.height));
         this._titleBackground.setScaleX(cc.winSize.width/this._titleBackground.width);
-
+        this.loadItemList();
         var title = cc.LabelBMFont.create('CỬA HÀNG',  font.soji20);
         this.addChild(title, 1);
         title.setAnchorPoint(cc.p(0.5, 0.5));
@@ -133,10 +133,11 @@ var Shop = cc.Layer.extend({
         });
         this._swallowTouch.setEnabled(false);
         cc.eventManager.addListener(this._swallowTouch, this);
+    },
+
+    loadItemList: function(){
     }
 
-    // loadResource: function () {
-    //
-    // }
+
 
 });

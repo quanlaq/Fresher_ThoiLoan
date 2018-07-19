@@ -11,24 +11,24 @@ var Map = cc.Node.extend({
        this.init();
    },
 
-        init: function(){
-
-            this.loadTileMap();
-            this.loadBackground();
-            this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
-            this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
-            this.initTileLocation();
-            var builderHut = new cc.Sprite(res.builderHut);
-            builderHut.attr({
-                anchorX: 0.5,
-                anchorY: 0.5,
-                x: cf.tileLocation[20][20].x,
-                y: cf.tileLocation[20][20].y + (2/2-0.5)*cf.tileSize.height*cf.SCALE,
-                // opacity: 255*30/100,
-                scale: cf.buildingScale
-            });
-            this.addChild(builderHut, 1);
-            // this.moveMap();
+    init: function(){
+        this.loadTileMap();
+        this.loadBackground();
+        this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
+        this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
+        this.initTileLocation();
+        cc.log(cf.tileLocation[1][1].x +" " + cf.tileLocation[1][1].y);
+        var builderHut = new cc.Sprite(res.builderHut);
+        builderHut.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: cf.tileLocation[20][20].x,
+            y: cf.tileLocation[20][20].y + (2/2-0.5)*cf.tileSize.height*cf.SCALE,
+            // opacity: 255*30/100,
+            scale: cf.SCALE
+        });
+        this.addChild(builderHut, 1);
+        // this.moveMap();
     },
 
     initTileLocation: function(){
