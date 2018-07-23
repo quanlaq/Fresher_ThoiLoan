@@ -245,9 +245,9 @@ var MainLayer = cc.Layer.extend({
         cc.loader.loadJson(res.troopBaseJson, function(err, data){
             cf.jsonTroopBase = data;
         });
-        cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
-            cf.ShopItemList = data;
-        });
+        //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
+        //    cf.ShopItemList = data;
+        //});
     }
 });
 
