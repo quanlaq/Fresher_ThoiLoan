@@ -24,7 +24,7 @@ var ShopItem = ccui.Button.extend({
 
         this._configItem = cf.ShopItemList["ShopList"][str][num];
         this._jsonConfig = cf.getJsonConfigFile(this._configItem["key"]);
-
+        this.setTag(this._configItem["tag"]);
         this.loadTextures(shopGUI.slot, shopGUI.slot);
 
         var infoButton = new ccui.Button();
@@ -94,12 +94,44 @@ var ShopItem = ccui.Button.extend({
         this.addChild(priceLabel, 1);
         this.addChild(itemNameLabel, 1);
 
+        this.init();
+
     },
 
     init: function(){
+        this.addTouchEventListener(this.touchBuyItem, this);
+    },
 
+    touchBuyItem: function(sender, type) {
+        switch (type) {
+            case ccui.Widget.TOUCH_BEGAN:
+                sender.scale = 1.55;
+                break;
+            case ccui.Widget.TOUCH_MOVED:
+                break;
+            case ccui.Widget.TOUCH_ENDED:
+                sender.scale = 1.5;
+                this.buyItem(this.getTag());
+                break;
+            case ccui.Widget.TOUCH_CANCELED:
+                sender.scale = 1.5;
+                break;
+        }
+    },
 
+    buyItem: function(tag){
+        var shopItem = this.getParent().getParent().getParent();
+        shopItem.onDisappear();
+        var map = shopItem.getParent()._map;
+        building = this.createBuildingFromTag(map, tag);
+        map.addChild(building);
 
+    },
+
+    createBuildingFromTag: function(map, tag){
+        switch(tag){
+            case 900: return new Barrack(20, 5, map.get_avaiable_position(3).x, map.get_avaiable_position(3).y);
+            default: return null;
+        }
     }
-
 });

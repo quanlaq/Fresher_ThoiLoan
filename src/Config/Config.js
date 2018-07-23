@@ -79,7 +79,7 @@ cf.ShopItemList = null;
 cf.SHOP_BUTTON_TAG = 110;
 cf.SETTING_BUTTON_TAG = 111;
 cf.INVENTORY_BUTTON_TAG = 112;
-cf.SHOP_TAG = 1010;
+cf.SHOP_TAG = 100010;
 
 /* Animation */
 cf.animationArmyCamp = [];

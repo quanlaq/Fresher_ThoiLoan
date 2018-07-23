@@ -3,7 +3,7 @@ var MainLayer = cc.Layer.extend({
     _shop: null,
     ctor:function () {
         this._super();
-
+        this.setTag(1000000);
         this.init();
     },
 

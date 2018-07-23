@@ -29,6 +29,7 @@ var Barrack = BuildingNode.extend({
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_barrack_1_" + this._level +".plist", res.folder_effect + "effect_barrack_1_" + this._level +".png");
             cf.animationBarrack[this._level] = MainLayer.get_animation("effect_barrack_1_" + this._level + " ", 6);
+            cf.animationBarrack[this._level].retain();
         }
     }
 })
