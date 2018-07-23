@@ -1,7 +1,7 @@
 var Barrack = BuildingNode.extend({
     ctor: function(id, level, row, col)
     {
-        this._size = cf.json_barrack["BAR_1"][level]["width"];
+        this._size = cf.jsonBarrack["BAR_1"][level]["width"];
         this._CENTER_BUILDING_STR = "BAR_1_";
         this._orderInUserBuildingList = 9;
 

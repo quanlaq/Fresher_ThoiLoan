@@ -3,7 +3,7 @@ var ArmyCamp = BuildingNode.extend({
 
     ctor: function(id, level, row, col)
     {
-        this._size = cf.json_army_camp["AMC_1"][level]["width"];
+        this._size = cf.jsonArmyCamp["AMC_1"][level]["width"];
         this._CENTER_BUILDING_STR = "AMC_1_";
         this._orderInUserBuildingList = 8;
 

@@ -18,16 +18,13 @@ var GUI_ResourceBar = cc.Node.extend({
         this._super();
         this.setAnchorPoint(cc.p(1, 1));
 
-        switch(type)
+        this._currentCapacity = (type == 1) ? cf.user._currentCapacityGold : (type == 2)? cf.user._currentCapacityElixir : (type == 3) ? cf.user._currentCapacityDarkElixir : cf.user._currentCoin;
+        this._maxCapacity = (type == 1) ? cf.user._maxCapacityGold : (type == 2) ? cf.user._maxCapacityElixir : (type == 3) ? cf.user._maxCapacityDarkElixir : 0;
+
+        switch (type)
         {
             case 1:
-                this._currentCapacity = cf.user._currentCapacityGold;
-                this._maxCapacity = cf.user._maxCapacityGold;
-                break;
-            case 2:
-                this._currentCapacity = cf._currentCapacityElixir
+                this._icon = cc.Sprite(res.folder_gui_main + "")
         }
-
-        this._currentCapacity = (type == 1)
     }
 })

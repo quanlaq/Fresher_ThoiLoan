@@ -294,28 +294,28 @@ var BuildingNode = cc.Node.extend({
         switch (this._CENTER_BUILDING_STR)
         {
             case "TOW_1_":
-                return (cf.json_townhall["TOW_1"][this._level]["buildTime"]);
+                return (cf.jsonTownHall["TOW_1"][this._level]["buildTime"]);
                 break;
             case "BDH_1":
                 return 0;
                 break;
             case "AMC_1_":
-                return (cf.json_army_camp["AMC_1"][this._level]["buildTime"]);
+                return (cf.jsonArmyCamp["AMC_1"][this._level]["buildTime"]);
                 break;
             case "BAR_1_":
-                return (cf.json_barrack["BAR_1"][this._level]["buildTime"]);
+                return (cf.jsonBarrack["BAR_1"][this._level]["buildTime"]);
                 break;
             case "RES_1_":
-                return (cf.json_resource["RES_1"][this._level]["buildTime"]);
+                return (cf.jsonResource["RES_1"][this._level]["buildTime"]);
                 break;
             case "RES_2_":
-                return (cf.json_resource["RES_2"][this._level]["buildTime"]);
+                return (cf.jsonResource["RES_2"][this._level]["buildTime"]);
                 break;
             case "STO_1_":
-                return (cf.json_storage["STO_1"][this._level]["buildTime"]);
+                return (cf.jsonStorage["STO_1"][this._level]["buildTime"]);
                 break;
             case "STO_2_":
-                return (cf.json_storage["STO_2"][this._level]["buildTime"]);
+                return (cf.jsonStorage["STO_2"][this._level]["buildTime"]);
                 break;
             case "canon_":
                 return this._level * 150;

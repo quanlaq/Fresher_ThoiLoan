@@ -39,10 +39,10 @@ var User = cc.Class.extend({
         this._id = id;
         this._name = name;
 
-        this._currentCapacityGold = cf.json_init_game["player"]["gold"];
-        this._currentCapacityElixir = cf.json_init_game["player"]["elixir"];
-        this._currentCapacityDarkElixir = cf.json_init_game["player"]["darkElixir"];
-        this._currentCoin = cf.json_init_game["player"]["coin"];
+        this._currentCapacityGold = cf.jsonInitGame["player"]["gold"];
+        this._currentCapacityElixir = cf.jsonInitGame["player"]["elixir"];
+        this._currentCapacityDarkElixir = cf.jsonInitGame["player"]["darkElixir"];
+        this._currentCoin = cf.jsonInitGame["player"]["coin"];
         this.initBuildingList();
 
     },

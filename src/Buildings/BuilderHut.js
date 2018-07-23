@@ -1,7 +1,7 @@
 var BuilderHut = BuildingNode.extend({
     ctor: function(id, order, row, col)
     {
-        this._size = cf.json_builder_hut["BDH_1"][order]["width"];
+        this._size = cf.jsonBuilderHut["BDH_1"][order]["width"];
         this._CENTER_BUILDING_STR = "BDH_1";
         this._orderInUserBuildingList = 11;
 

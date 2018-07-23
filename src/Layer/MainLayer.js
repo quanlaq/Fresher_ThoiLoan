@@ -234,39 +234,39 @@ var MainLayer = cc.Layer.extend({
 
     loadJson:function () {
         cc.loader.loadJson(res.armyCampJson, function(err, data){
-            cf.json_army_camp = data;
+            cf.jsonArmyCamp = data;
         });
 
         cc.loader.loadJson(res.barrackJson, function(err, data){
-            cf.json_barrack = data;
+            cf.jsonBarrack = data;
         });
         cc.loader.loadJson(res.builderHutJson, function(err, data){
-            cf.json_builder_hut = data;
+            cf.jsonBuilderHut = data;
         });
         cc.loader.loadJson(res.initGameJson, function(err, data){
-            cf.json_init_game = data;
+            cf.jsonInitGame = data;
         });
         cc.loader.loadJson(res.laboratoryJson, function(err, data){
-            cf.json_laboratory = data;
+            cf.jsonLaboratory = data;
         });
         cc.loader.loadJson(res.resourceJson, function(err, data){
-            cf.json_resource = data;
+            cf.jsonResource = data;
         });
         cc.loader.loadJson(res.storageJson, function(err, data){
-            cf.json_storage = data;
+            cf.jsonStorage = data;
         });
         cc.loader.loadJson(res.townHallJson, function(err, data){
-            cf.json_townhall = data;
+            cf.jsonTownHall = data;
         });
         cc.loader.loadJson(res.troopJson, function(err, data){
-            cf.json_troop = data;
+            cf.jsonTroop = data;
         });
         cc.loader.loadJson(res.troopBaseJson, function(err, data){
-            cf.json_troop_base = data;
+            cf.jsonTroopBase = data;
         });
-        //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
-        //    cf.ShopItemList = data;
-        //});
+        cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
+            cf.ShopItemList = data;
+        });
     }
 });
 

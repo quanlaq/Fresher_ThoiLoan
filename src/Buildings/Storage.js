@@ -7,7 +7,7 @@ var Storage = BuildingNode.extend({
     ctor: function(id, level, row, col, type)
     {
         this._CENTER_BUILDING_STR = (type == 1) ? "STO_1_" : "STO_2_"
-        this._size = (type == 1) ? this._size = cf.json_storage["STO_1"][level]["width"] : cf.json_storage["STO_2"][level]["width"];
+        this._size = (type == 1) ? this._size = cf.jsonStorage["STO_1"][level]["width"] : cf.jsonStorage["STO_2"][level]["width"];
         this._orderInUserBuildingList = (type == 1) ? 1 : 2;
 
         this._super(id, level, row, col);

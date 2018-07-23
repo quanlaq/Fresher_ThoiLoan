@@ -64,16 +64,16 @@ cf.shopType = {
 };
 
 cf.ShopItemList = null;
-cf.json_army_camp = null;
-cf.json_barrack = null;
-cf.json_builder_hut = null;
-cf.json_townhall = null;
-cf.json_init_game = null;
-cf.json_laboratory = null;
-cf.json_resource = null;
-cf.json_storage = null;
-cf.json_troop = null;
-cf.json_troop_base = null;;
+cf.jsonArmyCamp = null;
+cf.jsonBarrack = null;
+cf.jsonBuilderHut = null;
+cf.jsonTownHall = null;
+cf.jsonInitGame = null;
+cf.jsonLaboratory = null;
+cf.jsonResource = null;
+cf.jsonStorage = null;
+cf.jsonTroop = null;
+cf.jsonTroopBase = null;;
 cf.ShopItemList = null;
 
 cf.SHOP_BUTTON_TAG = 110;
