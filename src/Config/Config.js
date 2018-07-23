@@ -1,9 +1,9 @@
 var cf = cf || {};
 
-cf.SCALE = 0.5;
+cf.BIG_MAP_SCALE = 0.5;
 
+cf.SCALE = 1;
 cf.bgSCALE = cf.SCALE*2;
-
 cf.squareSize = 50*cf.SCALE;
 
 cf.tileSize = {
@@ -11,11 +11,16 @@ cf.tileSize = {
     width: 76*cf.SCALE
 };
 
+cf.time_refresh = 0.1;
+cf.building_selected = 0;
+
 cf.offsetX = 40*cf.SCALE;
 
 cf.buildingScale = cf.SCALE;
 
 cf.tileLocation = [];
+cf.map_location = [];
+cf.map_array = [];
 
 cf.shopType = {
     army: {
@@ -51,22 +56,43 @@ cf.shopType = {
 };
 
 cf.ShopItemList = null;
-cf.jsonArmyCamp = null;
-cf.jsonBarrack = null;
-cf.jsonBuilderHut = null;
-cf.jsonInitGame = null;
-cf.jsonLabratory = null;
-cf.jsonResource = null;
-cf.jsonStorage = null;
-cf.jsonTownHall = null;
-cf.jsonTroop  = null;
-cf.jsonTroopBase = null;
+cf.json_army_camp = null;
+cf.json_barrack = null;
+cf.json_builder_hut = null;
+cf.json_townhall = null;
+cf.json_init_game = null;
+cf.json_laboratory = null;
+cf.json_resource = null;
+cf.json_storage = null;
+cf.json_troop = null;
+cf.json_troop_base = null;;
 cf.ShopItemList = null;
+
+cf.animation_army_camp = [];
+cf.animation_barrack = [];
+cf.animation_barrack_working = null;
+cf.animation_coin_drop = [];
+cf.animation_lab = [];
+cf.animation_lab_researching = null;
+cf.animation_level_up = null;
+cf.animation_loading = null;
+cf.animation_res_1 = [];
+cf.animation_res_2 = [];
+cf.animation_town_hall = null;
+cf.animation_construct_level_up = null;
 
 cf.SHOP_BUTTON_TAG = 110;
 cf.SETTING_BUTTON_TAG = 111;
 cf.INVENTORY_BUTTON_TAG = 112;
 cf.SHOP_TAG = 1010;
+
+cf.r_old = null;
+cf.c_old = null;
+cf.current_r = null;
+cf.current_c = null;
+
+cf.MAX_BUILDING_TYPE = 20;
+cf.MAX_BUILDING_LEVEL = 20;
 
 //function
 cf.shopTagToName = function (tag) {

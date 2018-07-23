@@ -22,6 +22,20 @@
         "src/Layer/Shop/ShopCategory.js",
         "src/Layer/Shop/ShopItem.js",
         "src/Layer/Shop/ShopItemList.js",
-        "src/Resource.js"
+        "src/Resource.js",
+
+        "src/Buildings/Building.js",
+        "src/Buildings/BuildingNode.js",
+        "src/Buildings/ArmyCamp.js",
+        "src/Buildings/Barrack.js",
+        "src/Buildings/Grass.js",
+        "src/Buildings/TownHall.js",
+        "src/Buildings/Resource.js",
+        "src/Buildings/BuilderHut.js",
+        "src/Buildings/Canon.js",
+        "src/Buildings/GrassShadow.js",
+        "src/Buildings/Storage.js"
+
+
     ]
 }

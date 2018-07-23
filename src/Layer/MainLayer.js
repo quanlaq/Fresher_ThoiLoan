@@ -3,19 +3,21 @@ var MainLayer = cc.Layer.extend({
     _shop: null,
     ctor:function () {
         this._super();
-        this._map = new Map();
-        // cc.log(cc.winSize.height);
-        // cc.log(this._map._height);
-        this.addChild(this._map, 0, "MAP");
+
         this.init();
     },
 
     init: function() {
-        var centering = cc.p(-this._map._width/2 + cc.winSize.width/2, -this._map._height/2 + cc.winSize.height/2);
+        this.loadJson();
+        this._map = new Map();
+        this._map.anchorX = 0;
+        this._map.anchorY = 0;
+        //this._map.scale = cf.SCALE
+        var centering = cc.p(-this._map._width/2 * this._map.scale + cc.winSize.width/2, -this._map._height/2 * this._map.scale + cc.winSize.height/2)
         this._map.setPosition(centering);
+        this.addChild(this._map, 0, "MAP");
         this.moveMap();
         this.initMainGUI();
-        this.loadJson();
     },
 
     initMainGUI: function() {
@@ -89,17 +91,23 @@ var MainLayer = cc.Layer.extend({
         var self = this;
         cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
             onTouchBegan: function(touch, event) {
-                var loc = touch.getLocation();
+                var target = event.getCurrentTarget();
+                var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                var s = target.getContentSize();
+                var rect = cc.rect(0, 0, self._map._width, self._map._height);
 
-                // cc.log(self._map.x + " " + self._map.y);
-                // cc.log(loc.x + " " + loc.y);
-                var locInNodex = loc.x - self._map.x;
-                var locInNodey = loc.y - self._map.y;
-                cc.log("click " + locInNodex + " " + locInNodey);
-                return true;
+                if (cc.rectContainsPoint(rect, locationInNode)) {
+                    return true;
+                }
+
+                return false;
             },
             onTouchMoved: function(touch, event) {
+                // var self = event.getCurrentTarget()
+                if (cf.building_selected != 0)
+                    return
                 var delta = touch.getDelta();
                 var curPos = cc.p(self._map.x, self._map.y);
                 curPos = cc.pAdd(curPos, delta);
@@ -109,8 +117,8 @@ var MainLayer = cc.Layer.extend({
                 self._map.x = self._map.x >= 0 ? 0 : self._map.x;
                 self._map.y = self._map.y >= 0 ? 0 : self._map.y;
 
-                self._map.x = self._map.x >= cc.winSize.width - self._map._width ? self._map.x : cc.winSize.width - self._map._width;
-                self._map.y = self._map.y >= cc.winSize.height - self._map._height + 42 ? self._map.y : cc.winSize.height - self._map._height + 42 ;
+                self._map.x = self._map.x <= cc.winSize.width - self._map._width * self._map.scale ? cc.winSize.width - self._map._width * self._map.scale : self._map.x;
+                self._map.y = self._map.y <= cc.winSize.height - self._map._height * self._map.scale + 42 ? cc.winSize.height - self._map._height * self._map.scale + 42 : self._map.y;
 
                 // cc.log(self._map.y);
                 // cc.log(self._map.x >= cc.winSize.width - self._map._width);
@@ -216,34 +224,35 @@ var MainLayer = cc.Layer.extend({
 
     loadJson:function () {
         cc.loader.loadJson(res.armyCampJson, function(err, data){
-            cf.jsonArmyCamp = data;
+            cf.json_army_camp = data;
         });
+
         cc.loader.loadJson(res.barrackJson, function(err, data){
-            cf.jsonBarrack = data;
+            cf.json_barrack = data;
         });
         cc.loader.loadJson(res.builderHutJson, function(err, data){
-            cf.jsonBuilderHut = data;
+            cf.json_builder_hut = data;
         });
         cc.loader.loadJson(res.initGameJson, function(err, data){
-            cf.jsonInitGame = data;
+            cf.json_init_game = data;
         });
         cc.loader.loadJson(res.laboratoryJson, function(err, data){
-            cf.jsonLabratory = data;
+            cf.json_laboratory = data;
         });
         cc.loader.loadJson(res.resourceJson, function(err, data){
-            cf.jsonResource = data;
+            cf.json_resource = data;
         });
         cc.loader.loadJson(res.storageJson, function(err, data){
-            cf.jsonStorage = data;
+            cf.json_storage = data;
         });
         cc.loader.loadJson(res.townHallJson, function(err, data){
-            cf.jsonTownHall = data;
+            cf.json_townhall = data;
         });
         cc.loader.loadJson(res.troopJson, function(err, data){
-            cf.jsonTroop = data;
+            cf.json_troop = data;
         });
         cc.loader.loadJson(res.troopBaseJson, function(err, data){
-            cf.jsonTroopBase = data;
+            cf.json_troop_base = data;
         });
         //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
         //    cf.ShopItemList = data;
@@ -256,4 +265,34 @@ MainLayer.scene = function(){
     var layer = new MainLayer();
     scene.addChild(layer);
     return scene;
+};
+
+MainLayer.inside = function(point, vs) {
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+
+    var x = point[0], y = point[1];
+
+    var inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0], yi = vs[i][1];
+        var xj = vs[j][0], yj = vs[j][1];
+
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+
+    return inside;
+};
+
+MainLayer.get_animation = function(str, n)
+{
+    var arr_effect = [];
+    for (var i = 1; i <= n; i++)
+    {
+        var frame = cc.spriteFrameCache.getSpriteFrame(str + "(" + i + ").png");
+        arr_effect.push(frame)
+    };
+    return cc.Animate(new cc.Animation(arr_effect, cf.time_refresh))
 };
