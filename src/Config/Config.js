@@ -29,6 +29,10 @@ cf.current_c = null;
 cf.tileLocation = [];
 cf.map_array = [];
 
+/* Code Button Building */
+cf.CODE_BUILDING_INFO = 324324;
+cf.CODE_BUILDING_UPGRADE = 2314234;
+
 cf.user = null;
 
 /* Shop */

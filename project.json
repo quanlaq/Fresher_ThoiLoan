@@ -39,7 +39,8 @@
         "src/Buildings/Storage.js",
         "src/Buildings/Obstacle.js",
 
-        "src/GUI_ResourceBar.js"
+        "src/GUI/ResourceBar.js",
+        "src/GUI/IconActionBuilding.js"
 
     ]
 }

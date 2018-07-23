@@ -109,7 +109,7 @@ var GUI_ResourceBar = cc.Node.extend({
             this._bar.visible = false;
         }
 
-        this.updateStatus()
+        this.updateStatus();
     },
 
     updateStatus: function()

@@ -266,38 +266,43 @@ var BuildingNode = cc.Node.extend({
         switch(str)
         {
             case "TOW_1_":
-                this._center_building = new building(res.folder_town_hall + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_town_hall + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "BDH_1":
-                this._center_building = new building(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "AMC_1_":
-                this._center_building = new building(res.folder_army_camp + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_army_camp + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "BAR_1_":
-                this._center_building = new building(res.folder_barrack + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_barrack + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "RES_1_":
-                this._center_building = new building(res.folder_gold_mine + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_gold_mine + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "RES_2_":
-                this._center_building = new building(res.folder_elixir_collector + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_elixir_collector + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "STO_1_":
-                this._center_building = new building(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
                 break;
             case "STO_2_":
-                this._center_building = new building(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
                 break;
             case "canon_":
-                this._center_building = new building(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
                 break;
             case "OBS_":
-                this._center_building = new building(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
         }
+
+        this._center_building.attr({
+            anchorX: 0.5,
+            anchorY: 0.5
+        })
         this.addChild(this._center_building, this._defence.getLocalZOrder() - 1);
 
     },
@@ -308,6 +313,8 @@ var BuildingNode = cc.Node.extend({
         var scale_out = cc.scaleTo(0.25, 1.0);
         this._grass_shadow.visible = true;
         this._arrow.runAction(scale_out);
+
+        this.getParent().getParent().pushBuildingButton();
     },
 
     onEndClick: function()
@@ -316,6 +323,8 @@ var BuildingNode = cc.Node.extend({
         this._arrow.runAction(scale_in);
         this._green.visible = false;
         this._grass_shadow.visible = false;
+
+        this.getParent().getParent().pullBuildingButton();
     },
 
     showBuildingButton: function()
@@ -438,7 +447,6 @@ var BuildingNode = cc.Node.extend({
                     self.onClick();
                     self.showBuildingButton();
                     cf.building_selected = self._id;
-                    cc.log(cf.building_selected)
                     cf.current_r = self._row;
                     cf.current_c = self._col;
                     return true
@@ -456,7 +464,6 @@ var BuildingNode = cc.Node.extend({
             },
             onTouchMoved: function(touch, event)
             {
-                cc.log("move" + self._id + " " + cf.building_selected)
                 if (self._id != cf.building_selected) return;
                 //if (b.id != cf.building_selected) return;
                 var location_touch = touch.getLocation();
@@ -469,7 +476,6 @@ var BuildingNode = cc.Node.extend({
                         var x = tile_location.x * cf.BIG_MAP_SCALE;
                         var y = tile_location.y * cf.BIG_MAP_SCALE;
                         var polygon = [[x - cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x, y + cf.tileSize.height/2 * cf.BIG_MAP_SCALE], [x + cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x , y - cf.tileSize.height/2 * cf.BIG_MAP_SCALE]];
-                        //cc.log(self.x + " " + self.y );
                         if (MainLayer.inside([location_touch.x - self.getParent().x, location_touch.y - self.getParent().y], polygon)) {
                             var row = r - Math.floor(size / 2);
                             var col = c - Math.floor(size / 2);
