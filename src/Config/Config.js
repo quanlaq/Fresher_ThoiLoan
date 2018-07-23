@@ -7,6 +7,8 @@ cf.bgSCALE = cf.SCALE*2;
 cf.squareSize = 50*cf.SCALE;
 cf.buildingScale = cf.SCALE;
 
+cf.offSetGui = 15;
+
 cf.tileSize = {
     height: 57*cf.SCALE,
     width: 76*cf.SCALE

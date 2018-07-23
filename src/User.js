@@ -4,14 +4,14 @@
 var User = cc.Class.extend({
     _id: null,
     _name: "User Name",
-    _maxCapacityGold: null,
-    _maxCapacityElixir: null,
-    _maxCapacityDarkElixir: null,
+    _maxCapacityGold: 2000,
+    _maxCapacityElixir: 2000,
+    _maxCapacityDarkElixir: 2000,
 
     _currentCapacityGold: null,
     _currentCapacityElixir: null,
     _currentCapacityDarkElixir: null,
-    _currentCoin: null,
+    _currentCapacityCoin: null,
 
     _builderNumber: null,
 
@@ -42,7 +42,7 @@ var User = cc.Class.extend({
         this._currentCapacityGold = cf.jsonInitGame["player"]["gold"];
         this._currentCapacityElixir = cf.jsonInitGame["player"]["elixir"];
         this._currentCapacityDarkElixir = cf.jsonInitGame["player"]["darkElixir"];
-        this._currentCoin = cf.jsonInitGame["player"]["coin"];
+        this._currentCapacityCoin = cf.jsonInitGame["player"]["coin"];
         this.initBuildingList();
 
     },

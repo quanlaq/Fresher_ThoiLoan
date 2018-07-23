@@ -1,6 +1,12 @@
 var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
+    _resBarGold: null,
+    _resBarElixir: null,
+    _resBarDarkElixir: null,
+    _resBarDarkElixir: null,
+    _resBarCoin: null,
+
     ctor:function () {
         this._super();
         this.setTag(1000000);
@@ -66,7 +72,33 @@ var MainLayer = cc.Layer.extend({
 
     //gold,dElixir, Elixir, G visualize
     addResourceBar: function() {
+        this._resBarGold = new GUI_ResourceBar(1);
+        this._resBarGold.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
+        })
+        this.addChild(this._resBarGold);
 
+        this._resBarElixir = new GUI_ResourceBar(2);
+        this._resBarElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
+        })
+        this.addChild(this._resBarElixir);
+
+        this._resBarDarkElixir = new GUI_ResourceBar(3);
+        this._resBarDarkElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
+        })
+        this.addChild(this._resBarDarkElixir);
+
+        this._resBarCoin = new GUI_ResourceBar(4);
+        this._resBarCoin.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
+        })
+        this.addChild(this._resBarCoin);
     },
 
     //Exp, Trophy, Username, UserInfo
