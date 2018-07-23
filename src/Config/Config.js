@@ -19,7 +19,7 @@ cf.building_selected = 0;
 cf.move_able = false;
 cf.moved = false;
 cf.r_old = null;
-cf.c_old = null;
+        cf.c_old = null;
 cf.current_r = null;
 cf.current_c = null;
 
@@ -35,7 +35,7 @@ cf.shopType = {
         name: "ARMY",
         tag: 10,
         str: "QUÂN ĐỘI"
-        },
+    },
     res: {
         name: "RES",
         tag: 11,
