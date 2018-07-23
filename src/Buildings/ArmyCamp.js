@@ -5,6 +5,7 @@ var ArmyCamp = BuildingNode.extend({
     {
         this._size = cf.json_army_camp["AMC_1"][level]["width"];
         this._CENTER_BUILDING_STR = "AMC_1_";
+        this._orderInUserBuildingList = 8;
 
         this._super(id, level, row, col);
 
@@ -20,17 +21,17 @@ var ArmyCamp = BuildingNode.extend({
         effect.anchorY = 0;
         effect.scale = 2 * cf.SCALE;
         this.addChild(effect, this._center_building.getLocalZOrder() + 1);
-        effect.runAction(cf.animation_army_camp[2].clone().repeatForever());
+        effect.runAction(cf.animationArmyCamp[2].clone().repeatForever());
     },
 
     initAnimation: function()
     {
-        if (cf.animation_army_camp.length == 0)
+        if (cf.animationArmyCamp.length == 0)
         {
             for (var i = 1; i < 3; i++)
             {
                 cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_armycamp_" + i +".plist", res.folder_effect + "effect_armycamp_" + i +".png");
-                cf.animation_army_camp[i] = MainLayer.get_animation("effect_armycamp_" + i + " ", 5);
+                cf.animationArmyCamp[i] = MainLayer.get_animation("effect_armycamp_" + i + " ", 5);
             }
         }
     }

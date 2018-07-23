@@ -42,6 +42,8 @@ var res = {
 
     folder_gui_action_building: guiFolder + "Action_Building_Icon/",
     folder_gui_build: guiFolder + "/upgrade_building_gui/",
+    folder_gui_main: guiFolder + "Main_Gui/",
+
     folder_effect: folder_effect,
     tmp_effect: folder_effect + "tmp_effect.png",
 

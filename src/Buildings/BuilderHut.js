@@ -3,6 +3,7 @@ var BuilderHut = BuildingNode.extend({
     {
         this._size = cf.json_builder_hut["BDH_1"][order]["width"];
         this._CENTER_BUILDING_STR = "BDH_1";
+        this._orderInUserBuildingList = 11;
 
         this._super(id, order, row, col);
 

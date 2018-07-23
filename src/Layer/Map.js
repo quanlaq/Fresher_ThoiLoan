@@ -27,9 +27,9 @@ var Map = cc.Node.extend({
     {
         // id, level, row, col, size
         var army_camp = new ArmyCamp(1, 8, cf.json_init_game["map"]["AMC_1"]["posX"], cf.json_init_game["map"]["AMC_1"]["posY"])
-        this.locate_map_array(army_camp)
+        this.locate_map_array(army_camp);
         this.addChild(army_camp);
-        army_camp.updateZOrder();
+        this.addBuildingToUserBuildingList(army_camp);
 
         // id, level, row, col, size
         //var barrack = new Barrack(2, 6, 30, 30);
@@ -40,11 +40,14 @@ var Map = cc.Node.extend({
         var town_hall = new TownHall(3, 8, cf.json_init_game["map"]["TOW_1"]["posX"], cf.json_init_game["map"]["TOW_1"]["posY"])
         this.locate_map_array(town_hall);
         this.addChild(town_hall);
+        this.addBuildingToUserBuildingList(town_hall);
+
         //
         //id, level, row, col, type
         var resource_1 = new Resource(4, 8, cf.json_init_game["map"]["RES_1"]["posX"], cf.json_init_game["map"]["RES_1"]["posY"], 1);
         this.locate_map_array(resource_1)
         this.addChild(resource_1);
+        this.addBuildingToUserBuildingList(resource_1);
         //
         //var resource_2 = new Resource(5, 8, 15, 17, 2);
         //this.locate_map_array(resource_2)
@@ -54,6 +57,7 @@ var Map = cc.Node.extend({
         var builder_hut = new BuilderHut(6, 2, cf.json_init_game["map"]["BDH_1"]["posX"], cf.json_init_game["map"]["BDH_1"]["posY"])
         this.locate_map_array(builder_hut)
         this.addChild(builder_hut, 2);
+        this.addBuildingToUserBuildingList(builder_hut);
 
         //id, level, row, col, type, current capacity type(random)
         //var cct = Math.floor(Math.random() * 4);
@@ -76,7 +80,6 @@ var Map = cc.Node.extend({
         /* Obstacle */
         for (var i = 0; i < Object.keys(cf.json_init_game["obs"]).length/3; i++)
         {
-            cc.log(i)
             var obs = cf.json_init_game["obs"][i+1];
             var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"])
             this.locate_map_array(obstacle)
@@ -93,6 +96,12 @@ var Map = cc.Node.extend({
         //cc.eventManager.addListener(this.get_event_listener(storage_2), storage_2);
         cc.eventManager.addListener(this.get_event_listener(builder_hut), builder_hut);
         //cc.eventManager.addListener(this.get_event_listener(canon), canon);
+    },
+
+    addBuildingToUserBuildingList: function(b)
+    {
+        cf.user._buildingList[b._orderInUserBuildingList].push(b);
+        cf.user._buildingListCount[b._orderInUserBuildingList] ++;
     },
 
     get_event_listener: function(b)
@@ -140,8 +149,8 @@ var Map = cc.Node.extend({
                 var location_touch = touch.getLocation();
                 var tile_location = null;
 
-                for (r = 1; r < 41; r++)
-                    for (c = 1; c < 41; c++)
+                for (var r = 1; r < 41; r++)
+                    for (var c = 1; c < 41; c++)
                     {
                         tile_location = cf.tileLocation[r][c];
                         var x = tile_location.x * cf.BIG_MAP_SCALE;
@@ -201,10 +210,10 @@ var Map = cc.Node.extend({
 
     initTileLocation: function(){
         cf.map_array.push(0);
-        for (i = 1; i < 41; i++)
+        for (var i = 1; i < 41; i++)
         {
             var tmp_arr = [];
-            for (j = 0; j < 41; j++) tmp_arr.push(0)
+            for (var j = 0; j < 41; j++) tmp_arr.push(0)
             cf.map_array.push(tmp_arr);
         }
 
@@ -216,8 +225,8 @@ var Map = cc.Node.extend({
             for(var k = 0; k<=40; k++) arr_pos.push(k);
             for ( var j = 1; j <= 40; j++)
             {
-                r = i;
-                c = j;
+                var r = i;
+                var c = j;
                 var pos = null;
 
                 if ((r+c) % 2 === 0)
@@ -292,8 +301,8 @@ var Map = cc.Node.extend({
 
     unlocate_map_array: function(row, col, size)
     {
-        for (r = row; r < row + size; r ++)
-            for (c = col; c < col + size; c++)
+        for (var r = row; r < row + size; r ++)
+            for (var c = col; c < col + size; c++)
                 cf.map_array[r][c] = 0;
     },
 
@@ -303,15 +312,15 @@ var Map = cc.Node.extend({
         var c = b._col;
         var size = b._size;
 
-        for (i = r; i < r + size; i++)
-            for (j = c; j < c + size; j++)
+        for (var i = r; i < r + size; i++)
+            for (var j = c; j < c + size; j++)
                 cf.map_array[i][j] = b._id;
     },
 
     none_space: function(row, col, size, id)
     {
-        for (r = row; r < row + size; r++)
-            for (c = col; c < col + size; c++ )
+        for (var r = row; r < row + size; r++)
+            for (var c = col; c < col + size; c++ )
                 if (cf.map_array[r][c] != 0 && cf.map_array[r][c] != id)
                 {
                     return false;
@@ -327,10 +336,10 @@ var Map = cc.Node.extend({
 
     log_map_array: function()
     {
-        for (r = 1; r < 41; r ++)
+        for (var r = 1; r < 41; r ++)
         {
             var s = "";
-            for (c = 1; c < 41; c++) s = s + " " + cf.map_array[r][c];
+            for (var c = 1; c < 41; c++) s = s + " " + cf.map_array[r][c];
             cc.log(s)
         }
     },
@@ -341,12 +350,12 @@ var Map = cc.Node.extend({
         var dis = 100;
         var pos = cc.p(0, 0);
         var there_blank_space = false;
-        for (r = 1; r <= 40 - size + 1; r++)
-            for (c = 1; c <= 40 - size + 1; c++)
+        for (var r = 1; r <= 40 - size + 1; r++)
+            for (var c = 1; c <= 40 - size + 1; c++)
             {
                 var blank = true;
-                for (i = r; i <= r + size - 1; i++)
-                    for (j = c; j <= c + size - 1; j++)
+                for (var i = r; i <= r + size - 1; i++)
+                    for (var j = c; j <= c + size - 1; j++)
                         if (cf.map_array[i][j] != 0)
                         {
                             blank = false;

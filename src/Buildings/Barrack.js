@@ -3,6 +3,7 @@ var Barrack = BuildingNode.extend({
     {
         this._size = cf.json_barrack["BAR_1"][level]["width"];
         this._CENTER_BUILDING_STR = "BAR_1_";
+        this._orderInUserBuildingList = 9;
 
         this._super(id, level, row, col);
 
@@ -18,16 +19,16 @@ var Barrack = BuildingNode.extend({
         effect.anchorY = 0.5;
         effect.scale = cf.SCALE;
         this.addChild(effect, this._center_building.getLocalZOrder() + 1);
-        effect.runAction(cf.animation_barrack[this._level].clone().repeatForever());
+        effect.runAction(cf.animationBarrack[this._level].clone().repeatForever());
     },
 
     initAnimation: function()
     {
         if (this._level < 4) return;
-        if (cf.animation_barrack[this._level] == null)
+        if (cf.animationBarrack[this._level] == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_barrack_1_" + this._level +".plist", res.folder_effect + "effect_barrack_1_" + this._level +".png");
-            cf.animation_barrack[this._level] = MainLayer.get_animation("effect_barrack_1_" + this._level + " ", 6);
+            cf.animationBarrack[this._level] = MainLayer.get_animation("effect_barrack_1_" + this._level + " ", 6);
         }
     }
 })

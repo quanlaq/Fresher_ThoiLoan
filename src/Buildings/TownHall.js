@@ -3,6 +3,8 @@ var TownHall = BuildingNode.extend({
     {
         this._size = cf.json_townhall["TOW_1"][level]["width"];
         this._CENTER_BUILDING_STR = "TOW_1_";
+        this._orderInUserBuildingList = 0;
+
         this._super(id, level, row, col);
 
         /* Init Animation If Not Exist*/
@@ -16,16 +18,16 @@ var TownHall = BuildingNode.extend({
         effect.anchorX = 0.5;
         effect.anchorY = 0.5;
         this.addChild(effect, this._center_building.getLocalZOrder() + 1);
-        effect.runAction(cf.animation_town_hall.clone().repeatForever());
+        effect.runAction(cf.animationTownHall.clone().repeatForever());
 
     },
 
     initAnimation: function()
     {
-        if (cf.animation_town_hall == null)
+        if (cf.animationTownHall == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_townhall_flame.plist", res.folder_effect + "effect_townhall_flame.png");
-            cf.animation_town_hall = MainLayer.get_animation("effect_townhall_flame ", 12);
+            cf.animationTownHall = MainLayer.get_animation("effect_townhall_flame ", 12);
         }
     }
 })

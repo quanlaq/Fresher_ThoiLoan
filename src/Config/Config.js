@@ -18,26 +18,18 @@ cf.time_refresh = 0.1;
 cf.building_selected = 0;
 cf.move_able = false;
 cf.moved = false;
+cf.r_old = null;
+cf.c_old = null;
+cf.current_r = null;
+cf.current_c = null;
 
-
+/* Map Infor */
 cf.tileLocation = [];
-cf.map_location = [];
 cf.map_array = [];
 
-cf.user = {
-    id: null,
-    name: "User Name",
-    maxCapacityGold: null,
-    maxCapacityElixir: null,
-    maxCapacityDarkElixir: null,
+cf.user = null;
 
-    currentCapacityGold: null,
-    currentCapacityElixir: null,
-    currentCapacityDarkElixir: null,
-    curentCoin: null,
-
-}
-
+/* Shop */
 cf.shopType = {
     army: {
         name: "ARMY",
@@ -84,28 +76,25 @@ cf.json_troop = null;
 cf.json_troop_base = null;;
 cf.ShopItemList = null;
 
-cf.animation_army_camp = [];
-cf.animation_barrack = [];
-cf.animation_barrack_working = null;
-cf.animation_coin_drop = [];
-cf.animation_lab = [];
-cf.animation_lab_researching = null;
-cf.animation_level_up = null;
-cf.animation_loading = null;
-cf.animation_res_1 = [];
-cf.animation_res_2 = [];
-cf.animation_town_hall = null;
-cf.animation_construct_level_up = null;
-
 cf.SHOP_BUTTON_TAG = 110;
 cf.SETTING_BUTTON_TAG = 111;
 cf.INVENTORY_BUTTON_TAG = 112;
 cf.SHOP_TAG = 1010;
 
-cf.r_old = null;
-cf.c_old = null;
-cf.current_r = null;
-cf.current_c = null;
+/* Animation */
+cf.animationArmyCamp = [];
+cf.animationBarrack = [];
+cf.animationBarrackWorking = null;
+cf.animationCoinDrop = [];
+cf.animationLab = [];
+cf.animationLabWorking = null;
+cf.animationLevelUp = null;
+cf.animationLoading = null;
+cf.animationRes1 = [];
+cf.animationRes2 = [];
+cf.animationTownHall = null;
+cf.animationConstructLevelUp = null;
+
 
 cf.MAX_BUILDING_TYPE = 20;
 cf.MAX_BUILDING_LEVEL = 20;

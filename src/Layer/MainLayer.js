@@ -9,15 +9,20 @@ var MainLayer = cc.Layer.extend({
 
     init: function() {
         this.loadJson();
+        this.initUser();
+        this.initMap();
+        this.initMainGUI();
+    },
+
+    initMap: function()
+    {
         this._map = new Map();
         this._map.anchorX = 0;
         this._map.anchorY = 0;
-        //this._map.scale = cf.SCALE
         var centering = cc.p(-this._map._width/2 * this._map.scale + cc.winSize.width/2, -this._map._height/2 * this._map.scale + cc.winSize.height/2)
         this._map.setPosition(centering);
         this.addChild(this._map, 0, "MAP");
         this.moveMap();
-        this.initMainGUI();
     },
 
     initMainGUI: function() {
@@ -27,6 +32,11 @@ var MainLayer = cc.Layer.extend({
         this.addAttackButton();
         this.addResourceBar();
         this.addUserInfo();
+    },
+
+    initUser: function()
+    {
+        cf.user = new User("uId00001", "GSN Fresher 9 - Team 2");
     },
 
     log: function(){

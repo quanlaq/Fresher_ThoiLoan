@@ -33,6 +33,8 @@ var BuildingNode = cc.Node.extend({
 
     _CENTER_BUILDING_STR: null,
 
+    /* Order In User Building List */
+    _orderInUserBuildingList: null,
 
     ctor: function(id, level, row, col)
     {
@@ -166,7 +168,7 @@ var BuildingNode = cc.Node.extend({
     onCompleteBuild: function()
     {
         this._effect_level_up.visible = true;
-        if (cf.animation_construct_level_up == null)
+        if (cf.animationConstructLevelUp == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_construct_levelup.plist", res.folder_effect + "effect_construct_levelup.png");
         }
