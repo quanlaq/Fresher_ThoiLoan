@@ -32,9 +32,9 @@ var Map = cc.Node.extend({
         army_camp.updateZOrder();
 
         // id, level, row, col, size
-        var barrack = new Barrack(2, 6, 30, 30);
-        this.locate_map_array(barrack)
-        this.addChild(barrack);
+        //var barrack = new Barrack(2, 6, 30, 30);
+        //this.locate_map_array(barrack)
+        //this.addChild(barrack);
 
         // id, level, row, col, size
         var town_hall = new TownHall(3, 8, cf.json_init_game["map"]["TOW_1"]["posX"], cf.json_init_game["map"]["TOW_1"]["posY"])
@@ -46,9 +46,9 @@ var Map = cc.Node.extend({
         this.locate_map_array(resource_1)
         this.addChild(resource_1);
         //
-        var resource_2 = new Resource(5, 8, 15, 17, 2);
-        this.locate_map_array(resource_2)
-        this.addChild(resource_2);
+        //var resource_2 = new Resource(5, 8, 15, 17, 2);
+        //this.locate_map_array(resource_2)
+        //this.addChild(resource_2);
 
         //id, order, row, col, type
         var builder_hut = new BuilderHut(6, 2, cf.json_init_game["map"]["BDH_1"]["posX"], cf.json_init_game["map"]["BDH_1"]["posY"])
@@ -56,31 +56,43 @@ var Map = cc.Node.extend({
         this.addChild(builder_hut, 2);
 
         //id, level, row, col, type, current capacity type(random)
-        var cct = Math.floor(Math.random() * 4);
-        var storage_1 = new Storage(7, 8, 30, 25, 1, cct);
-        this.locate_map_array(storage_1);
-        this.addChild(storage_1, 2)
+        //var cct = Math.floor(Math.random() * 4);
+        //var storage_1 = new Storage(7, 8, 30, 25, 1, cct);
+        //this.locate_map_array(storage_1);
+        //this.addChild(storage_1, 2)
         //
-        cct = Math.floor(Math.random() * 4);
-        var storage_2 = new Storage(8, 8, 13, 28, 2, cct);
-        this.locate_map_array(storage_2);
-        this.addChild(storage_2, 2);
+        //cct = Math.floor(Math.random() * 4);
+        //var storage_2 = new Storage(8, 8, 13, 28, 2, cct);
+        //this.locate_map_array(storage_2);
+        //this.addChild(storage_2, 2);
 
         //id, level, row, col, current orientation(random)
-        var co = Math.floor(Math.random() * 5)
-        var canon = new Canon(8, 2, 25, 10, co);
-        this.locate_map_array(canon);
-        this.addChild(canon, 2);
+        //var co = Math.floor(Math.random() * 5)
+        //var canon = new Canon(8, 2, 25, 10, co);
+        //this.locate_map_array(canon);
+        //this.addChild(canon, 2);
         //
+
+        /* Obstacle */
+        for (var i = 0; i < Object.keys(cf.json_init_game["obs"]).length/3; i++)
+        {
+            cc.log(i)
+            var obs = cf.json_init_game["obs"][i+1];
+            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"])
+            this.locate_map_array(obstacle)
+            this.addChild(obstacle, 2);
+
+        }
+
         cc.eventManager.addListener(this.get_event_listener(town_hall), town_hall);
         cc.eventManager.addListener(this.get_event_listener(army_camp), army_camp);
-        cc.eventManager.addListener(this.get_event_listener(barrack), barrack);
+        //cc.eventManager.addListener(this.get_event_listener(barrack), barrack);
         cc.eventManager.addListener(this.get_event_listener(resource_1), resource_1);
-        cc.eventManager.addListener(this.get_event_listener(resource_2), resource_2);
-        cc.eventManager.addListener(this.get_event_listener(storage_1), storage_1);
-        cc.eventManager.addListener(this.get_event_listener(storage_2), storage_2);
+        //cc.eventManager.addListener(this.get_event_listener(resource_2), resource_2);
+        //cc.eventManager.addListener(this.get_event_listener(storage_1), storage_1);
+        //cc.eventManager.addListener(this.get_event_listener(storage_2), storage_2);
         cc.eventManager.addListener(this.get_event_listener(builder_hut), builder_hut);
-        cc.eventManager.addListener(this.get_event_listener(canon), canon);
+        //cc.eventManager.addListener(this.get_event_listener(canon), canon);
     },
 
     get_event_listener: function(b)
@@ -111,7 +123,7 @@ var Map = cc.Node.extend({
                 }
                 else
                 {
-                    b.onMoveClick();
+                    b.onEndClick();
                     b.hideBuildingButton();
                     cf.building_selected = 0;
                     return false
@@ -168,7 +180,7 @@ var Map = cc.Node.extend({
             {
                 b.updateZOrder();
                 b._red.visible = false;
-                b.onMoveClick();
+                b.onEndClick();
                 if (!self.none_space(b._row, b._col, size, b._id))
                 {
                     b._row = cf.current_r;

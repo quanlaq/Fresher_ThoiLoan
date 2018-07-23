@@ -12,7 +12,11 @@ cf.tileSize = {
 };
 
 cf.time_refresh = 0.1;
+
+/* Move Building */
 cf.building_selected = 0;
+cf.move_able = false;
+cf.moved = false;
 
 cf.offsetX = 40*cf.SCALE;
 

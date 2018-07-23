@@ -44,9 +44,6 @@ var BuildingNode = cc.Node.extend({
         this._col = col;
         this._level = level;
 
-        var self = this;
-
-
         //grass shadow
         this._grass_shadow = new GrassShadow(this._size);
         this.addChild(this._grass_shadow, 0);
@@ -212,6 +209,9 @@ var BuildingNode = cc.Node.extend({
             case "canon_":
                 this._center_building = new building(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
                 break;
+            case "OBS_":
+                this._center_building = new building(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
             default:
                 break;
         }
@@ -227,7 +227,7 @@ var BuildingNode = cc.Node.extend({
         this._arrow.runAction(scale_out);
     },
 
-    onMoveClick: function()
+    onEndClick: function()
     {
         var scale_in = cc.scaleTo(0.25, 0);
         this._arrow.runAction(scale_in);
