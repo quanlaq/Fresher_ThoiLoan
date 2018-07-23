@@ -5,6 +5,7 @@ cf.BIG_MAP_SCALE = 0.5;
 cf.SCALE = 1;
 cf.bgSCALE = cf.SCALE*2;
 cf.squareSize = 50*cf.SCALE;
+cf.buildingScale = cf.SCALE;
 
 cf.tileSize = {
     height: 57*cf.SCALE,
@@ -18,13 +19,24 @@ cf.building_selected = 0;
 cf.move_able = false;
 cf.moved = false;
 
-cf.offsetX = 40*cf.SCALE;
-
-cf.buildingScale = cf.SCALE;
 
 cf.tileLocation = [];
 cf.map_location = [];
 cf.map_array = [];
+
+cf.user = {
+    id: null,
+    name: "User Name",
+    maxCapacityGold: null,
+    maxCapacityElixir: null,
+    maxCapacityDarkElixir: null,
+
+    currentCapacityGold: null,
+    currentCapacityElixir: null,
+    currentCapacityDarkElixir: null,
+    curentCoin: null,
+
+}
 
 cf.shopType = {
     army: {
