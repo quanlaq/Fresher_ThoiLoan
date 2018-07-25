@@ -6,6 +6,7 @@ var Obstacle = BuildingNode.extend({
     {
         this._size = 2;
         this._super(id, type, row, col);
+        this._grassShadow.visible = false;
         this.addCenterBuilding("OBS_", 0);
     }
 })

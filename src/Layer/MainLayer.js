@@ -43,7 +43,7 @@ var MainLayer = cc.Layer.extend({
         this.addShopButton();
         this.addSettingButton();
         this.addInventoryButton();
-        this.addAttackButton();
+        this.addBuildingButtons();
         this.addResourceBar();
         this.addUserInfo();
     },
@@ -76,14 +76,14 @@ var MainLayer = cc.Layer.extend({
         this.addChild(shopButton, 1, cf.SHOP_BUTTON_TAG);
     },
 
-    addAttackButton: function() {
+    addBuildingButtons: function() {
         this._guiButtonBuildingInfo = new IconActionBuilding(cf.CODE_BUILDING_INFO);
         this._guiButtonBuildingInfo.attr({
             anchorX: 1,
             anchorY: 0,
             x: cc.winSize.width / 2,
             y: -200
-        })
+        });
         this.addChild(this._guiButtonBuildingInfo, 2);
 
         this._guiButtonBuildingUpgrade = new IconActionBuilding(cf.CODE_BUILDING_UPGRADE);
@@ -92,28 +92,31 @@ var MainLayer = cc.Layer.extend({
             anchorY: 0,
             x: cc.winSize.width / 2,
             y: -200
-        })
+        });
         this.addChild(this._guiButtonBuildingUpgrade, 2);
     },
 
-    pushBuildingButton: function()
+    pushBuildingButtons: function()
     {
-        this._guiButtonBuildingInfo.runAction(cc.moveTo(0.5, cc.p(cc.winSize.width/2 - cf.offSetGui * 2, 200)));
+        // this._guiButtonBuildingInfo.runAction(cc.moveTo(0.5, cc.p(cc.winSize.width/2 - cf.offSetGui * 2, 200)));
+        //
+        // var action2 = cc.moveTo(0.5, cc.p(cc.winSize.width/2 + cf.offSetGui * 2, 2));
+        // // action2.retain();
+        // this._guiButtonBuildingUpgrade.runAction(action2.clone());
 
-        var action2 = cc.moveTo(0.5, cc.p(cc.winSize.width/2 + cf.offSetGui * 2, 2));
-        action2.retain();
-        this._guiButtonBuildingUpgrade.runAction(action2.clone());
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - cf.offSetGui*2, this._guiButtonBuildingInfo.height));
+
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + cf.offSetGui*2, this._guiButtonBuildingUpgrade.height));
+
     },
 
-    pullBuildingButton: function()
+    pullBuildingButtons: function()
     {
 
-        var action1 = cc.moveTo(0.5, cc.p(cc.winSize.width/2 + cf.offSetGui * 2, 200));
-        this._guiButtonBuildingInfo.runAction(action1);
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - cf.offSetGui*2, -200));
 
-        var action2 = cc.moveTo(0.5, cc.p(cc.winSize.width/2 + cf.offSetGui * 2, -200));
-        action2.retain();
-        this._guiButtonBuildingUpgrade.runAction(action2.clone());
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + cf.offSetGui*2, -200));
+
     },
 
     //gold,dElixir, Elixir, G visualize
@@ -122,28 +125,28 @@ var MainLayer = cc.Layer.extend({
         this._resBarGold.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
-        })
+        });
         this.addChild(this._resBarGold);
 
         this._resBarElixir = new GUI_ResourceBar(2);
         this._resBarElixir.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
-        })
+        });
         this.addChild(this._resBarElixir);
 
         this._resBarDarkElixir = new GUI_ResourceBar(3);
         this._resBarDarkElixir.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
-        })
+        });
         this.addChild(this._resBarDarkElixir);
 
         this._resBarCoin = new GUI_ResourceBar(4);
         this._resBarCoin.attr({
             x: cc.winSize.width - cf.offSetGui,
             y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
-        })
+        });
         this.addChild(this._resBarCoin);
     },
 
