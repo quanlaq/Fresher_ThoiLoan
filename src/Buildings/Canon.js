@@ -1,12 +1,12 @@
 var Canon = BuildingNode.extend({
     _defense_base: null,
 
-    ctor: function(id, level, row, col, ori)
+    ctor: function(id, level, row, col, ori, existed)
     {
         this._size = 3;
         this._CENTER_BUILDING_STR = "canon_";
 
-        this._super(id, level, row, col);
+        this._super(id, level, row, col, existed);
 
         /* Add Center Building */
         this.addCenterBuilding(this._CENTER_BUILDING_STR, ori);

@@ -125,13 +125,18 @@ var ShopItem = ccui.Button.extend({
         var map = shopItem.getParent()._map;
         building = this.createBuildingFromTag(map, tag);
         map.addChild(building);
+        // map.log_map_array();
         building.onClick();
         building.showBuildingButton();
     },
 
     createBuildingFromTag: function(map, tag){
         switch(tag){
-            case 900: return new Barrack(20, 5, map.get_avaiable_position(3).x, map.get_avaiable_position(3).y);
+            case 900:
+            {
+                cf.isDeciding = true;
+                return new Barrack(20, 5, map.get_avaiable_position(3).x, map.get_avaiable_position(3).y, false);
+            }
             default: return null;
         }
     }

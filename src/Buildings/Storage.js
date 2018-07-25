@@ -4,13 +4,13 @@
 var Storage = BuildingNode.extend({
     _type: null,
 
-    ctor: function(id, level, row, col, type)
+    ctor: function(id, level, row, col, existed, type)
     {
         this._CENTER_BUILDING_STR = (type == 1) ? "STO_1_" : "STO_2_"
         this._size = (type == 1) ? this._size = cf.jsonStorage["STO_1"][level]["width"] : cf.jsonStorage["STO_2"][level]["width"];
         this._orderInUserBuildingList = (type == 1) ? 1 : 2;
 
-        this._super(id, level, row, col);
+        this._super(id, level, row, col, existed);
         this._type =  type;
 
         /* Init Animation If Not Exist*/

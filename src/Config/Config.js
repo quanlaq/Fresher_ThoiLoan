@@ -15,6 +15,7 @@ cf.tileSize = {
 };
 
 cf.time_refresh = 0.1;
+cf.isDeciding = false;
 
 /* Move Building */
 cf.building_selected = 0;
@@ -34,6 +35,8 @@ cf.CODE_BUILDING_INFO = 324324;
 cf.CODE_BUILDING_UPGRADE = 2314234;
 
 cf.user = null;
+
+cf.isMapMoving = false;
 
 /* Shop */
 cf.shopType = {

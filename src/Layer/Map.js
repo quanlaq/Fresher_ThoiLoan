@@ -26,7 +26,7 @@ var Map = cc.Node.extend({
     add_building: function()
     {
         // id, level, row, col
-        var army_camp = new ArmyCamp(1, 8, cf.jsonInitGame["map"]["AMC_1"]["posX"], cf.jsonInitGame["map"]["AMC_1"]["posY"])
+        var army_camp = new ArmyCamp(1, 8, cf.jsonInitGame["map"]["AMC_1"]["posX"], cf.jsonInitGame["map"]["AMC_1"]["posY"], true);
         //this.locate_map_array(army_camp);
         this.addChild(army_camp);
         this.addBuildingToUserBuildingList(army_camp);
@@ -37,14 +37,14 @@ var Map = cc.Node.extend({
         //this.addChild(barrack);
 
         // id, level, row, col
-        var town_hall = new TownHall(3, 8, cf.jsonInitGame["map"]["TOW_1"]["posX"], cf.jsonInitGame["map"]["TOW_1"]["posY"])
+        var town_hall = new TownHall(3, 8, cf.jsonInitGame["map"]["TOW_1"]["posX"], cf.jsonInitGame["map"]["TOW_1"]["posY"], true);
         //this.locate_map_array(town_hall);
         this.addChild(town_hall);
         this.addBuildingToUserBuildingList(town_hall);
 
         //
         //id, level, row, col, type
-        var resource_1 = new Resource(4, 8, cf.jsonInitGame["map"]["RES_1"]["posX"], cf.jsonInitGame["map"]["RES_1"]["posY"], 1);
+        var resource_1 = new Resource(4, 8, cf.jsonInitGame["map"]["RES_1"]["posX"], cf.jsonInitGame["map"]["RES_1"]["posY"], true, 1 );
         //this.locate_map_array(resource_1)
         this.addChild(resource_1);
         this.addBuildingToUserBuildingList(resource_1);
@@ -54,7 +54,7 @@ var Map = cc.Node.extend({
         //this.addChild(resource_2);
 
         //id, order, row, col, type
-        var builder_hut = new BuilderHut(6, 2, cf.jsonInitGame["map"]["BDH_1"]["posX"], cf.jsonInitGame["map"]["BDH_1"]["posY"])
+        var builder_hut = new BuilderHut(6, 2, cf.jsonInitGame["map"]["BDH_1"]["posX"], cf.jsonInitGame["map"]["BDH_1"]["posY"], true);
         //this.locate_map_array(builder_hut)
         this.addChild(builder_hut, 2);
         this.addBuildingToUserBuildingList(builder_hut);
@@ -81,7 +81,7 @@ var Map = cc.Node.extend({
         for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length/3; i++)
         {
             var obs = cf.jsonInitGame["obs"][i+1];
-            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"])
+            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true)
             //this.locate_map_array(obstacle)
             this.addChild(obstacle, 2);
 
@@ -197,18 +197,15 @@ var Map = cc.Node.extend({
         this.addChild(this._bgBotLeft,  1);
     },
 
-
-
-
-
-
-
     log_map_array: function()
     {
         for (var r = 1; r < 41; r ++)
         {
             var s = "";
-            for (var c = 1; c < 41; c++) s = s + " " + cf.map_array[r][c];
+            for (var c = 1; c < 41; c++) {
+                var tmp = cf.map_array[r][c] >= 10 ? cf.map_array[r][c].toString() : ("0" + cf.map_array[r][c].toString());
+                s = s + " " + tmp;
+            }
             cc.log(s)
         }
     },
@@ -218,14 +215,13 @@ var Map = cc.Node.extend({
         var flag = false;
         var dis = 100;
         var pos = cc.p(0, 0);
-        var there_blank_space = false;
         for (var r = 1; r <= 40 - size + 1; r++)
             for (var c = 1; c <= 40 - size + 1; c++)
             {
                 var blank = true;
                 for (var i = r; i <= r + size - 1; i++)
                     for (var j = c; j <= c + size - 1; j++)
-                        if (cf.map_array[i][j] != 0)
+                        if (cf.map_array[i][j] !== 0)
                         {
                             blank = false;
                             break;
@@ -240,7 +236,7 @@ var Map = cc.Node.extend({
                     flag = true;
                 }
             }
-        if (flag) return pos
-        else return cc.p(20, 20);
+        if (flag) return pos;
+        return cc.p(20, 20);
     }
 });

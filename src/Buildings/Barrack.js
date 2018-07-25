@@ -1,11 +1,11 @@
 var Barrack = BuildingNode.extend({
-    ctor: function(id, level, row, col)
+    ctor: function(id, level, row, col, existed)
     {
         this._size = cf.jsonBarrack["BAR_1"][level]["width"];
         this._CENTER_BUILDING_STR = "BAR_1_";
         this._orderInUserBuildingList = 9;
 
-        this._super(id, level, row, col);
+        this._super(id, level, row, col, existed);
 
         /* Init Animation If Not Exist*/
         this.initAnimation();

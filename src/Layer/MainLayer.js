@@ -200,7 +200,8 @@ var MainLayer = cc.Layer.extend({
             },
             onTouchMoved: function(touch, event) {
                 // var self = event.getCurrentTarget()
-                if (cf.building_selected != 0)
+                cf.isMapMoving = true;
+                if (cf.building_selected !== 0)
                     return
                 var delta = touch.getDelta();
                 var curPos = cc.p(self._map.x, self._map.y);
@@ -224,6 +225,7 @@ var MainLayer = cc.Layer.extend({
                 curPos = null;
             },
             onTouchEnded: function(touch, event) {
+                cf.isMapMoving = false;
                 return true;
             }
         }, this)
@@ -254,6 +256,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     openShop: function(sender, type){
+        if(cf.isDeciding) return;
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 sender.setScale(sender.scale*1.1);
@@ -277,6 +280,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     openSetting: function(sender, type){
+        if(cf.isDeciding) return;
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 sender.setScale(sender.scale*1.1);
@@ -297,6 +301,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     openInventory: function(sender, type) {
+        if(cf.isDeciding) return;
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 sender.setScale(sender.scale*1.1);

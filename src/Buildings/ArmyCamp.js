@@ -1,13 +1,13 @@
 var ArmyCamp = BuildingNode.extend({
     _troop_quantity: null,
 
-    ctor: function(id, level, row, col)
+    ctor: function(id, level, row, col, existed)
     {
         this._size = cf.jsonArmyCamp["AMC_1"][level]["width"];
         this._CENTER_BUILDING_STR = "AMC_1_";
         this._orderInUserBuildingList = 8;
 
-        this._super(id, level, row, col);
+        this._super(id, level, row, col, existed);
 
         /* Init Animation If Not Exist*/
         this.initAnimation();

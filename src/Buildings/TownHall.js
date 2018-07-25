@@ -1,11 +1,11 @@
 var TownHall = BuildingNode.extend({
-    ctor: function(id, level, row, col)
+    ctor: function(id, level, row, col, existed)
     {
         this._size = cf.jsonTownHall["TOW_1"][level]["width"];
         this._CENTER_BUILDING_STR = "TOW_1_";
         this._orderInUserBuildingList = 0;
 
-        this._super(id, level, row, col);
+        this._super(id, level, row, col, existed);
 
         /* Init Animation If Not Exist*/
         this.initAnimation();
