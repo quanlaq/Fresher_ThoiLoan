@@ -84,6 +84,7 @@ cf.jsonStorage = null;
 cf.jsonTroop = null;
 cf.jsonTroopBase = null;;
 cf.ShopItemList = null;
+cf.defaultLevel = 1;
 
 cf.SHOP_BUTTON_TAG = 110;
 cf.SETTING_BUTTON_TAG = 111;
@@ -155,6 +156,8 @@ cf.getJsonConfigFile = function (str) {
     var substr = str.substring(0, 3);
     switch(substr)
     {
+        case "TOW": return cf.jsonTownHall;
+        case "LAB": return cf.jsonLaboratory;
         case "BDH":
             return cf.jsonBuilderHut;
         case "RES":
@@ -168,5 +171,43 @@ cf.getJsonConfigFile = function (str) {
         case "BAR":
             return cf.jsonBarrack;
     }
+
+};
+
+cf.tagToItem = function(tag, lvl, posX, posY, existed){
+    switch(tag){
+        case 900:
+            return new Barrack(20, lvl, posX, posY, existed);
+        case 800:
+            return new ArmyCamp(21, lvl, posX, posY, existed);
+        case 400:
+            return new Resource(22, lvl, posX, posY, existed, 1);
+        case 500:
+            return new Resource(23, lvl, posX, posY, existed, 2);
+        case 100:
+            return new Storage(24, lvl, posX, posY, existed, 1);
+        case 200:
+            return new Storage(25, lvl, posX, posY, existed, 2);
+        case 1100:
+            return new BuilderHut(26, lvl, posX, posY, existed);
+
+    }
+};
+
+cf.stringToItemInit = function(str) {
+    cc.log(str);
+    switch(str)
+    {
+        case "TOW_1":
+            return new TownHall(20, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+        case "BDH_1":
+            return new BuilderHut(21, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+        case "RES_1":
+            return new Resource(22, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true, 1);
+        case "AMC_1":
+            return new TownHall(24, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+        default: return null;
+    }
+
 
 };

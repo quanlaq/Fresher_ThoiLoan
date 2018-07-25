@@ -25,39 +25,50 @@ var Map = cc.Node.extend({
 
     add_building: function()
     {
-        // id, level, row, col
-        var army_camp = new ArmyCamp(1, 8, cf.jsonInitGame["map"]["AMC_1"]["posX"], cf.jsonInitGame["map"]["AMC_1"]["posY"], true);
-        //this.locate_map_array(army_camp);
-        this.addChild(army_camp);
-        this.addBuildingToUserBuildingList(army_camp);
+        var self = this;
+        for(var key in cf.jsonInitGame["map"]) {
+            if(cf.jsonInitGame["map"].hasOwnProperty(key)) {
+                var building = cf.stringToItemInit(key);
+                if(building !== null) {
+                    self.addChild(building);
+                    self.addBuildingToUserBuildingList(building);
+                }
+            }
+        }
 
-        // id, level, row, col, size
-        //var barrack = new Barrack(2, 6, 30, 30);
-        //this.locate_map_array(barrack)
-        //this.addChild(barrack);
-
-        // id, level, row, col
-        var town_hall = new TownHall(3, 8, cf.jsonInitGame["map"]["TOW_1"]["posX"], cf.jsonInitGame["map"]["TOW_1"]["posY"], true);
-        //this.locate_map_array(town_hall);
-        this.addChild(town_hall);
-        this.addBuildingToUserBuildingList(town_hall);
-
+        // // id, level, row, col
+        // var army_camp = new ArmyCamp(1, 8, cf.jsonInitGame["map"]["AMC_1"]["posX"], cf.jsonInitGame["map"]["AMC_1"]["posY"], true);
+        // //this.locate_map_array(army_camp);
+        // this.addChild(army_camp);
+        // this.addBuildingToUserBuildingList(army_camp);
         //
-        //id, level, row, col, type
-        var resource_1 = new Resource(4, 8, cf.jsonInitGame["map"]["RES_1"]["posX"], cf.jsonInitGame["map"]["RES_1"]["posY"], true, 1 );
-        //this.locate_map_array(resource_1)
-        this.addChild(resource_1);
-        this.addBuildingToUserBuildingList(resource_1);
+        // // id, level, row, col, size
+        // //var barrack = new Barrack(2, 6, 30, 30);
+        // //this.locate_map_array(barrack)
+        // //this.addChild(barrack);
         //
-        //var resource_2 = new Resource(5, 8, 15, 17, 2);
-        //this.locate_map_array(resource_2)
-        //this.addChild(resource_2);
-
-        //id, order, row, col, type
-        var builder_hut = new BuilderHut(6, 2, cf.jsonInitGame["map"]["BDH_1"]["posX"], cf.jsonInitGame["map"]["BDH_1"]["posY"], true);
-        //this.locate_map_array(builder_hut)
-        this.addChild(builder_hut, 2);
-        this.addBuildingToUserBuildingList(builder_hut);
+        // // id, level, row, col
+        // var town_hall = new TownHall(3, 8, cf.jsonInitGame["map"]["TOW_1"]["posX"], cf.jsonInitGame["map"]["TOW_1"]["posY"], true);
+        // //this.locate_map_array(town_hall);
+        // this.addChild(town_hall);
+        // this.addBuildingToUserBuildingList(town_hall);
+        //
+        // //
+        // //id, level, row, col, type
+        // var resource_1 = new Resource(4, 8, cf.jsonInitGame["map"]["RES_1"]["posX"], cf.jsonInitGame["map"]["RES_1"]["posY"], true, 1 );
+        // //this.locate_map_array(resource_1)
+        // this.addChild(resource_1);
+        // this.addBuildingToUserBuildingList(resource_1);
+        // //
+        // //var resource_2 = new Resource(5, 8, 15, 17, 2);
+        // //this.locate_map_array(resource_2)
+        // //this.addChild(resource_2);
+        //
+        // //id, order, row, col, type
+        // var builder_hut = new BuilderHut(6, 2, cf.jsonInitGame["map"]["BDH_1"]["posX"], cf.jsonInitGame["map"]["BDH_1"]["posY"], true);
+        // //this.locate_map_array(builder_hut)
+        // this.addChild(builder_hut, 2);
+        // this.addBuildingToUserBuildingList(builder_hut);
 
         //id, level, row, col, type, current capacity type(random)
         //var cct = Math.floor(Math.random() * 4);

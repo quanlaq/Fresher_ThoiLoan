@@ -1,25 +1,26 @@
 var Barrack = BuildingNode.extend({
-    ctor: function(id, level, row, col, existed)
-    {
+    ctor: function(id, level, row, col, existed) {
         this._size = cf.jsonBarrack["BAR_1"][level]["width"];
         this._CENTER_BUILDING_STR = "BAR_1_";
         this._orderInUserBuildingList = 9;
 
         this._super(id, level, row, col, existed);
-
         /* Init Animation If Not Exist*/
         this.initAnimation();
-
+        cc.log(cf.animationBarrack[this._level]);
         /* Add Center Building */
         this.addCenterBuilding(this._CENTER_BUILDING_STR);
 
         /* Add Effect */
-        var effect = cc.Sprite(res.tmp_effect);
-        effect.anchorX = 0.5;
-        effect.anchorY = 0.5;
-        effect.scale = cf.SCALE;
-        this.addChild(effect, this._center_building.getLocalZOrder() + 1);
-        effect.runAction(cf.animationBarrack[this._level].clone().repeatForever());
+
+        if (this._level >= 4) {
+            var effect = cc.Sprite(res.tmp_effect);
+            effect.anchorX = 0.5;
+            effect.anchorY = 0.5;
+            effect.scale = cf.SCALE;
+            this.addChild(effect, this._center_building.getLocalZOrder() + 1);
+            effect.runAction(cf.animationBarrack[this._level].clone().repeatForever());
+        }
     },
 
     initAnimation: function()

@@ -195,9 +195,9 @@ var BuildingNode = cc.Node.extend({
         this._effect_level_up = cc.Sprite(res.tmp_effect);
         this._effect_level_up.attr({
             anchorX: 0.5,
-            anchorY: 1,
+            anchorY: 0,
             x: 0,
-            y: 3 * cf.tileSize.height,
+            y: 0,
             scale: cf.SCALE,
             visible: false
         });
@@ -235,7 +235,7 @@ var BuildingNode = cc.Node.extend({
         this._effect_level_up.runAction(cc.Sequence(MainLayer.get_animation("effect_construct_levelup ", 6).clone()).clone());
     },
 
-    addCenterBuilding: function(str, order_image) {
+    addCenterBuilding: function(str) {
 
         this._CENTER_BUILDING_STR = str;
 
@@ -264,13 +264,13 @@ var BuildingNode = cc.Node.extend({
                 this._center_building = cc.Sprite(res.folder_elixir_collector + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "STO_1_":
-                this._center_building = cc.Sprite(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "STO_2_":
-                this._center_building = cc.Sprite(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "canon_":
-                this._center_building = cc.Sprite(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "OBS_":
                 this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
@@ -291,13 +291,14 @@ var BuildingNode = cc.Node.extend({
         this._green.visible = true;
         var scale_out = cc.scaleTo(0.25, 1.0);
         this._arrow.runAction(scale_out);
+        this._arrow.setGlobalZOrder(50);
     },
 
     onEndClick: function() {
         var scale_in = cc.scaleTo(0.25, 0);
         this._arrow.runAction(scale_in);
         this._green.visible = false;
-
+        this._arrow.setLocalZOrder(this._grassShadow.getLocalZOrder() + 1);
         // this.getParent().getParent().pullBuildingButtons();
     },
 

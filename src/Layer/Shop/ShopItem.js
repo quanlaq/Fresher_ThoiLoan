@@ -18,11 +18,13 @@ var ShopItem = ccui.Button.extend({
     _priceText: null,
     _priceIcon: null,
     _jsonConfig: null,
+    _shopListJson: null,
 
     ctor: function(str, num){
         this._super();
 
-        this._configItem = cf.ShopItemList["ShopList"][str][num];
+        this._shopListJson = cf.ShopItemList["ShopList"][str];
+        this._configItem = this._shopListJson[num];
         this._jsonConfig = cf.getJsonConfigFile(this._configItem["key"]);
         this.setTag(this._configItem["tag"]);
         this.loadTextures(shopGUI.slot, shopGUI.slot);
@@ -131,13 +133,20 @@ var ShopItem = ccui.Button.extend({
     },
 
     createBuildingFromTag: function(map, tag){
-        switch(tag){
-            case 900:
-            {
-                cf.isDeciding = true;
-                return new Barrack(20, 5, map.get_avaiable_position(3).x, map.get_avaiable_position(3).y, false);
+        cf.isDeciding = true;
+        var building;
+        for(var i = 0; i<this._shopListJson.length; i++){
+
+            if(tag === this._shopListJson[i]["tag"]) {
+
+                var buildingConfig = cf.getJsonConfigFile(this._shopListJson[i]["key"]);
+                var size = buildingConfig[this._shopListJson[i]["key"]]["1"]["width"];
+                var pos = map.get_avaiable_position(size);
+                building = cf.tagToItem(tag, cf.defaultLevel, pos.x, pos.y, false);
+                break;
             }
-            default: return null;
         }
+
+        return building;
     }
 });

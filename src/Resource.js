@@ -1,6 +1,6 @@
 var mapFolder = "res/Art/Map/";
 var buildingsFolder = "res/Art/Buildings/";
-var folder_effect = "res/effect/"
+var folder_effect = "res/effect/";
 var fontFolder = "res/Art/Fonts/";
 var guiFolder = "res/Art/GUIs/";
 var jsonFolder = "res/ConfigJson/";
