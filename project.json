@@ -37,7 +37,10 @@
         "src/Buildings/Canon.js",
         "src/Buildings/GrassShadow.js",
         "src/Buildings/Storage.js",
-        "src/Buildings/Obstacle.js"
+        "src/Buildings/Obstacle.js",
+
+        "src/GUI/ResourceBar.js",
+        "src/GUI/IconActionBuilding.js"
 
     ]
 }

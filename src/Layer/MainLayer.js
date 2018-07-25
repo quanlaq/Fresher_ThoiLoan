@@ -1,6 +1,20 @@
 var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
+    _resBarGold: null,
+    _resBarElixir: null,
+    _resBarDarkElixir: null,
+    _resBarDarkElixir: null,
+    _resBarCoin: null,
+
+    _guiButtonBuildingInfo: null,
+    _guiButtonBuildingUpgrade: null,
+
+    _action1Pull: null,
+    _action2Pull: null,
+    _action1Push: null,
+    _action2Push: null,
+
     ctor:function () {
         this._super();
         this.setTag(1000000);
@@ -62,16 +76,83 @@ var MainLayer = cc.Layer.extend({
         this.addChild(shopButton, 1, cf.SHOP_BUTTON_TAG);
     },
 
-    addAttackButton: function() {},
+    addAttackButton: function() {
+        this._guiButtonBuildingInfo = new IconActionBuilding(cf.CODE_BUILDING_INFO);
+        this._guiButtonBuildingInfo.attr({
+            anchorX: 1,
+            anchorY: 0,
+            x: cc.winSize.width / 2,
+            y: -200
+        })
+        this.addChild(this._guiButtonBuildingInfo, 2);
+
+        this._guiButtonBuildingUpgrade = new IconActionBuilding(cf.CODE_BUILDING_UPGRADE);
+        this._guiButtonBuildingUpgrade.attr({
+            anchorX: 0,
+            anchorY: 0,
+            x: cc.winSize.width / 2,
+            y: -200
+        })
+        this.addChild(this._guiButtonBuildingUpgrade, 2);
+    },
+
+    pushBuildingButton: function()
+    {
+        this._guiButtonBuildingInfo.runAction(cc.moveTo(0.5, cc.p(cc.winSize.width/2 - cf.offSetGui * 2, 200)));
+
+        var action2 = cc.moveTo(0.5, cc.p(cc.winSize.width/2 + cf.offSetGui * 2, 2));
+        action2.retain();
+        this._guiButtonBuildingUpgrade.runAction(action2.clone());
+    },
+
+    pullBuildingButton: function()
+    {
+
+        var action1 = cc.moveTo(0.5, cc.p(cc.winSize.width/2 + cf.offSetGui * 2, 200));
+        this._guiButtonBuildingInfo.runAction(action1);
+
+        var action2 = cc.moveTo(0.5, cc.p(cc.winSize.width/2 + cf.offSetGui * 2, -200));
+        action2.retain();
+        this._guiButtonBuildingUpgrade.runAction(action2.clone());
+    },
 
     //gold,dElixir, Elixir, G visualize
     addResourceBar: function() {
+        this._resBarGold = new GUI_ResourceBar(1);
+        this._resBarGold.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
+        })
+        this.addChild(this._resBarGold);
 
+        this._resBarElixir = new GUI_ResourceBar(2);
+        this._resBarElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
+        })
+        this.addChild(this._resBarElixir);
+
+        this._resBarDarkElixir = new GUI_ResourceBar(3);
+        this._resBarDarkElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
+        })
+        this.addChild(this._resBarDarkElixir);
+
+        this._resBarCoin = new GUI_ResourceBar(4);
+        this._resBarCoin.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
+        })
+        this.addChild(this._resBarCoin);
     },
 
     //Exp, Trophy, Username, UserInfo
     addUserInfo: function() {
-
+        var userName = cc.LabelBMFont(cf.user._name, font.soji20);
+        userName.setAnchorPoint(cc.p(0, 1));
+        userName.setPosition(cc.p(cf.offSetGui, cc.winSize.height - cf.offSetGui));
+        this.addChild(userName)
     },
 
     addSettingButton: function() {

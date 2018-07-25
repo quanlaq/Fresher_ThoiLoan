@@ -7,6 +7,8 @@ cf.bgSCALE = cf.SCALE*2;
 cf.squareSize = 50*cf.SCALE;
 cf.buildingScale = cf.SCALE;
 
+cf.offSetGui = 15;
+
 cf.tileSize = {
     height: 57*cf.SCALE,
     width: 76*cf.SCALE
@@ -26,6 +28,10 @@ cf.current_c = null;
 /* Map Infor */
 cf.tileLocation = [];
 cf.map_array = [];
+
+/* Code Button Building */
+cf.CODE_BUILDING_INFO = 324324;
+cf.CODE_BUILDING_UPGRADE = 2314234;
 
 cf.user = null;
 

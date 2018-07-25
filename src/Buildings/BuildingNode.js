@@ -36,6 +36,8 @@ var BuildingNode = cc.Node.extend({
     /* Order In User Building List */
     _orderInUserBuildingList: null,
 
+    _listener: null,
+
     ctor: function(id, level, row, col)
     {
         this._super();
@@ -131,6 +133,77 @@ var BuildingNode = cc.Node.extend({
         this.schedule(this.updateBuildStatus, 1);
 
         //this.showBuildingButton();
+
+        /* Add event listener */
+
+        var listenerMove = this.get_event_listener(this);
+        cc.eventManager.addListener(listenerMove, this);
+        listenerMove.setEnabled(false);
+        var self = this;
+        this._listener = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            onTouchBegan: function(touch, event) {
+                var locationNote = self.convertToNodeSpace(touch.getLocation());
+                var w = self._size * cf.tileSize.width / 2 ;
+                var h = self._size * cf.tileSize.height / 2 ;
+                var x = locationNote.x;
+                var y = locationNote.y;
+                var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
+
+                if (MainLayer.inside([ x, y], polygon) && (cf.building_selected == 0))
+                {
+                    self.onClick();
+                    self.showBuildingButton();
+                    cf.building_selected = self._id;
+                    cf.current_r = self._row;
+                    cf.current_c = self._col;
+                    return true
+                }
+                else
+                {
+                    self.onEndClick();
+                    self.hideBuildingButton();
+                    cf.building_selected = 0;
+                    return false
+                }
+                cf.r_old = self._row;
+                cf.c_old = self._col;
+                return true;
+            },
+
+            onTouchEnded: function(touch, event) {
+                listenerMove.setEnabled(true);
+                this.setEnabled(false);
+                //var locationNote = self.convertToNodeSpace(touch.getLocation());
+                //var w = self._size * cf.tileSize.width / 2 ;
+                //var h = self._size * cf.tileSize.height / 2 ;
+                //var x = locationNote.x;
+                //var y = locationNote.y;
+                //var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
+                //
+                //if (MainLayer.inside([ x, y], polygon) && (cf.building_selected == 0))
+                //{
+                //    self.onClick();
+                //    self.showBuildingButton();
+                //    cf.building_selected = self.id;
+                //    cf.current_r = self._row;
+                //    cf.current_c = self._col;
+                //    return true
+                //}
+                //else
+                //{
+                //    self.onEndClick();
+                //    self.hideBuildingButton();
+                //    cf.building_selected = 0;
+                //    return false
+                //}
+                //cf.r_old = self._row;
+                //cf.c_old = self._col;
+                //return true;
+            }
+        })
+
+        this.locate_map_array(this);
     },
 
     initEffectLevelUp: function()
@@ -182,41 +255,54 @@ var BuildingNode = cc.Node.extend({
 
     addCenterBuilding: function(str, order_image)
     {
+
+        this._CENTER_BUILDING_STR = str;
+        if (this._CENTER_BUILDING_STR != "OBS_")
+        {
+            var self = this;
+
+            cc.eventManager.addListener(this._listener, this);
+        }
         switch(str)
         {
             case "TOW_1_":
-                this._center_building = new building(res.folder_town_hall + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_town_hall + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "BDH_1":
-                this._center_building = new building(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "AMC_1_":
-                this._center_building = new building(res.folder_army_camp + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_army_camp + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "BAR_1_":
-                this._center_building = new building(res.folder_barrack + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_barrack + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "RES_1_":
-                this._center_building = new building(res.folder_gold_mine + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_gold_mine + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "RES_2_":
-                this._center_building = new building(res.folder_elixir_collector + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_elixir_collector + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             case "STO_1_":
-                this._center_building = new building(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
                 break;
             case "STO_2_":
-                this._center_building = new building(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
                 break;
             case "canon_":
-                this._center_building = new building(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + order_image + res.image_postfix_2);
                 break;
             case "OBS_":
-                this._center_building = new building(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
                 break;
             default:
                 break;
         }
+
+        this._center_building.attr({
+            anchorX: 0.5,
+            anchorY: 0.5
+        })
         this.addChild(this._center_building, this._defence.getLocalZOrder() - 1);
 
     },
@@ -227,6 +313,8 @@ var BuildingNode = cc.Node.extend({
         var scale_out = cc.scaleTo(0.25, 1.0);
         this._grass_shadow.visible = true;
         this._arrow.runAction(scale_out);
+
+        this.getParent().getParent().pushBuildingButton();
     },
 
     onEndClick: function()
@@ -235,6 +323,8 @@ var BuildingNode = cc.Node.extend({
         this._arrow.runAction(scale_in);
         this._green.visible = false;
         this._grass_shadow.visible = false;
+
+        this.getParent().getParent().pullBuildingButton();
     },
 
     showBuildingButton: function()
@@ -334,6 +424,146 @@ var BuildingNode = cc.Node.extend({
         this._gui_commit_build.addClickEventListener(function() {});
     },
 
+    get_event_listener: function(b)
+    {
+        var self = this;
+        var size = b._size;
+
+        var listener1 = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function(touch, event)
+            {
+
+                var locationNote = self.convertToNodeSpace(touch.getLocation());
+                var w = self._size * cf.tileSize.width / 2 ;
+                var h = self._size * cf.tileSize.height / 2 ;
+                var x = locationNote.x;
+                var y = locationNote.y;
+                var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
+
+                if (MainLayer.inside([ x, y], polygon) )
+                {
+                    self.onClick();
+                    self.showBuildingButton();
+                    cf.building_selected = self._id;
+                    cf.current_r = self._row;
+                    cf.current_c = self._col;
+                    return true
+                }
+                else
+                {
+                    self.onEndClick();
+                    self.hideBuildingButton();
+                    cf.building_selected = 0;
+                    return false
+                }
+                cf.r_old = self._row;
+                cf.c_old = self._col;
+                return false;
+            },
+            onTouchMoved: function(touch, event)
+            {
+                if (self._id != cf.building_selected) return;
+                //if (b.id != cf.building_selected) return;
+                var location_touch = touch.getLocation();
+                var tile_location = null;
+
+                for (var r = 1; r < 41; r++)
+                    for (var c = 1; c < 41; c++)
+                    {
+                        tile_location = cf.tileLocation[r][c];
+                        var x = tile_location.x * cf.BIG_MAP_SCALE;
+                        var y = tile_location.y * cf.BIG_MAP_SCALE;
+                        var polygon = [[x - cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x, y + cf.tileSize.height/2 * cf.BIG_MAP_SCALE], [x + cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x , y - cf.tileSize.height/2 * cf.BIG_MAP_SCALE]];
+                        if (MainLayer.inside([location_touch.x - self.getParent().x, location_touch.y - self.getParent().y], polygon)) {
+                            var row = r - Math.floor(size / 2);
+                            var col = c - Math.floor(size / 2);
+                            if (row == cf.r_old && col == cf.c_old) return;
+                            if (!self.check_out_of_map(row, col, size)) return;
+                            cf.r_old = row;
+                            cf.c_old = col;
+                            self._row = row
+                            self._col = col;
+                            self.setLocalZOrder(200);
+                            self.x = cf.tileLocation[self._row][self._col].x;
+                            self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
+
+                            if (!self.none_space(self._row, self._col, size, self._id))
+                            {
+                                self._red.visible = true;
+                                self._green.visible = false;
+                            }
+                            else
+                            {
+                                self._red.visible = false;
+                                self._green.visible = true;
+                            }
+                            return true
+                        }
+                    }
+
+                return true;
+            },
+            onTouchEnded: function(touch, event)
+            {
+                self.updateZOrder();
+                self._red.visible = false;
+                self.onEndClick();
+                if (!self.none_space(self._row, self._col, size, self._id))
+                {
+                    self._row = cf.current_r;
+                    self._col = cf.current_c;
+                    self.x = cf.tileLocation[self._row][self._col].x;
+                    self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
+                }
+                else
+                {
+                    self.unlocate_map_array(cf.current_r, cf.current_c, size);
+                    self.locate_map_array(self);
+                    this.setEnabled(false);
+                    self._listener.setEnabled(true);
+                }
+            }
+        });
+
+        return listener1;
+    },
+
+    none_space: function(row, col, size, id)
+    {
+        for (var r = row; r < row + size; r++)
+            for (var c = col; c < col + size; c++ )
+                if (cf.map_array[r][c] != 0 && cf.map_array[r][c] != id)
+                {
+                    return false;
+                }
+        return true;
+    },
+
+    unlocate_map_array: function(row, col, size)
+    {
+        for (var r = row; r < row + size; r ++)
+            for (var c = col; c < col + size; c++)
+                cf.map_array[r][c] = 0;
+    },
+
+    locate_map_array: function(b)
+    {
+        var r = b._row;
+        var c = b._col;
+        var size = b._size;
+
+        for (var i = r; i < r + size; i++)
+            for (var j = c; j < c + size; j++)
+                cf.map_array[i][j] = b._id;
+    },
+
+    check_out_of_map: function(row, col, size)
+    {
+        if (row < 1 || col < 1 || row + size > 41 || col + size > 41) return false;
+        return true;
+    },
     //getEventListenerForButton: function(button, code)
     //{
     //    var self = this;

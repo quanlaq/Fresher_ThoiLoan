@@ -27,7 +27,7 @@ var Map = cc.Node.extend({
     {
         // id, level, row, col
         var army_camp = new ArmyCamp(1, 8, cf.jsonInitGame["map"]["AMC_1"]["posX"], cf.jsonInitGame["map"]["AMC_1"]["posY"])
-        this.locate_map_array(army_camp);
+        //this.locate_map_array(army_camp);
         this.addChild(army_camp);
         this.addBuildingToUserBuildingList(army_camp);
 
@@ -38,14 +38,14 @@ var Map = cc.Node.extend({
 
         // id, level, row, col
         var town_hall = new TownHall(3, 8, cf.jsonInitGame["map"]["TOW_1"]["posX"], cf.jsonInitGame["map"]["TOW_1"]["posY"])
-        this.locate_map_array(town_hall);
+        //this.locate_map_array(town_hall);
         this.addChild(town_hall);
         this.addBuildingToUserBuildingList(town_hall);
 
         //
         //id, level, row, col, type
         var resource_1 = new Resource(4, 8, cf.jsonInitGame["map"]["RES_1"]["posX"], cf.jsonInitGame["map"]["RES_1"]["posY"], 1);
-        this.locate_map_array(resource_1)
+        //this.locate_map_array(resource_1)
         this.addChild(resource_1);
         this.addBuildingToUserBuildingList(resource_1);
         //
@@ -55,7 +55,7 @@ var Map = cc.Node.extend({
 
         //id, order, row, col, type
         var builder_hut = new BuilderHut(6, 2, cf.jsonInitGame["map"]["BDH_1"]["posX"], cf.jsonInitGame["map"]["BDH_1"]["posY"])
-        this.locate_map_array(builder_hut)
+        //this.locate_map_array(builder_hut)
         this.addChild(builder_hut, 2);
         this.addBuildingToUserBuildingList(builder_hut);
 
@@ -82,20 +82,20 @@ var Map = cc.Node.extend({
         {
             var obs = cf.jsonInitGame["obs"][i+1];
             var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"])
-            this.locate_map_array(obstacle)
+            //this.locate_map_array(obstacle)
             this.addChild(obstacle, 2);
 
         }
 
-        cc.eventManager.addListener(this.get_event_listener(town_hall), town_hall);
-        cc.eventManager.addListener(this.get_event_listener(army_camp), army_camp);
-        //cc.eventManager.addListener(this.get_event_listener(barrack), barrack);
-        cc.eventManager.addListener(this.get_event_listener(resource_1), resource_1);
-        //cc.eventManager.addListener(this.get_event_listener(resource_2), resource_2);
-        //cc.eventManager.addListener(this.get_event_listener(storage_1), storage_1);
-        //cc.eventManager.addListener(this.get_event_listener(storage_2), storage_2);
-        cc.eventManager.addListener(this.get_event_listener(builder_hut), builder_hut);
-        //cc.eventManager.addListener(this.get_event_listener(canon), canon);
+        //cc.eventManager.addListener(this.get_event_listener(town_hall), town_hall);
+        //cc.eventManager.addListener(this.get_event_listener(army_camp), army_camp);
+        ////cc.eventManager.addListener(this.get_event_listener(barrack), barrack);
+        //cc.eventManager.addListener(this.get_event_listener(resource_1), resource_1);
+        ////cc.eventManager.addListener(this.get_event_listener(resource_2), resource_2);
+        ////cc.eventManager.addListener(this.get_event_listener(storage_1), storage_1);
+        ////cc.eventManager.addListener(this.get_event_listener(storage_2), storage_2);
+        //cc.eventManager.addListener(this.get_event_listener(builder_hut), builder_hut);
+        ////cc.eventManager.addListener(this.get_event_listener(canon), canon);
     },
 
     addBuildingToUserBuildingList: function(b)
@@ -104,109 +104,7 @@ var Map = cc.Node.extend({
         cf.user._buildingListCount[b._orderInUserBuildingList] ++;
     },
 
-    get_event_listener: function(b)
-    {
-        var self = this;
-        var size = b._size;
 
-        var listener1 = cc.EventListener.create({
-            event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            swallowTouches: true,
-            onTouchBegan: function(touch, event)
-            {
-                var locationNote = b.convertToNodeSpace(touch.getLocation());
-                var w = b._size * cf.tileSize.width / 2 ;
-                var h = b._size * cf.tileSize.height / 2 ;
-                var x = locationNote.x;
-                var y = locationNote.y;
-                var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
-
-                if (MainLayer.inside([ x, y], polygon) && (cf.building_selected == 0))
-                {
-                    b.onClick();
-                    b.showBuildingButton();
-                    cf.building_selected = b.id;
-                    cf.current_r = b._row;
-                    cf.current_c = b._col;
-                    return true
-                }
-                else
-                {
-                    b.onEndClick();
-                    b.hideBuildingButton();
-                    cf.building_selected = 0;
-                    return false
-                }
-                cf.r_old = b._row;
-                cf.c_old = b._col;
-                return false;
-            },
-            onTouchMoved: function(touch, event)
-            {
-                if (b.id != cf.building_selected) return;
-                //cf.building_selected = 0;
-                var location = self.getParent().convertTouchToNodeSpace(touch);
-                var location_touch = touch.getLocation();
-                var tile_location = null;
-
-                for (var r = 1; r < 41; r++)
-                    for (var c = 1; c < 41; c++)
-                    {
-                        tile_location = cf.tileLocation[r][c];
-                        var x = tile_location.x * cf.BIG_MAP_SCALE;
-                        var y = tile_location.y * cf.BIG_MAP_SCALE;
-                        var polygon = [[x - cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x, y + cf.tileSize.height/2 * cf.BIG_MAP_SCALE], [x + cf.tileSize.width/2 * cf.BIG_MAP_SCALE, y], [x , y - cf.tileSize.height/2 * cf.BIG_MAP_SCALE]];
-                        if (MainLayer.inside([location_touch.x - self.x, location_touch.y - self.y], polygon)) {
-                            var row = r - Math.floor(size / 2);
-                            var col = c - Math.floor(size / 2);
-                            if (row == cf.r_old && col == cf.c_old) return;
-                            if (!self.check_out_of_map(row, col, size)) return;
-                            cf.r_old = row;
-                            cf.c_old = col;
-                            b._row = row
-                            b._col = col;
-                            b.setLocalZOrder(200);
-                            b.x = cf.tileLocation[b._row][b._col].x;
-                            b.y = cf.tileLocation[b._row][b._col].y - (size / 2) * cf.tileSize.height;
-
-                            if (!self.none_space(b._row, b._col, size, b._id))
-                            {
-                                b._red.visible = true;
-                                b._green.visible = false;
-                            }
-                            else
-                            {
-                                b._red.visible = false;
-                                b._green.visible = true;
-                            }
-                            return true
-                        }
-                    }
-
-                return true;
-            },
-            onTouchEnded: function(touch, event)
-            {
-                b.updateZOrder();
-                b._red.visible = false;
-                b.onEndClick();
-                if (!self.none_space(b._row, b._col, size, b._id))
-                {
-                    b._row = cf.current_r;
-                    b._col = cf.current_c;
-                    b.x = cf.tileLocation[b._row][b._col].x;
-                    b.y = cf.tileLocation[b._row][b._col].y - (size / 2) * cf.tileSize.height;
-                }
-                else
-                {
-                    self.unlocate_map_array(cf.current_r, cf.current_c, size);
-                    self.locate_map_array(b)
-                }
-            }
-        })
-
-        return listener1;
-    },
 
     initTileLocation: function(){
         cf.map_array.push(0);
@@ -299,40 +197,11 @@ var Map = cc.Node.extend({
         this.addChild(this._bgBotLeft,  1);
     },
 
-    unlocate_map_array: function(row, col, size)
-    {
-        for (var r = row; r < row + size; r ++)
-            for (var c = col; c < col + size; c++)
-                cf.map_array[r][c] = 0;
-    },
 
-    locate_map_array: function(b)
-    {
-        var r = b._row;
-        var c = b._col;
-        var size = b._size;
 
-        for (var i = r; i < r + size; i++)
-            for (var j = c; j < c + size; j++)
-                cf.map_array[i][j] = b._id;
-    },
 
-    none_space: function(row, col, size, id)
-    {
-        for (var r = row; r < row + size; r++)
-            for (var c = col; c < col + size; c++ )
-                if (cf.map_array[r][c] != 0 && cf.map_array[r][c] != id)
-                {
-                    return false;
-                }
-        return true;
-    },
 
-    check_out_of_map: function(row, col, size)
-    {
-        if (row < 1 || col < 1 || row + size > 41 || col + size > 41) return false;
-        return true;
-    },
+
 
     log_map_array: function()
     {

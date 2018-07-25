@@ -125,7 +125,8 @@ var ShopItem = ccui.Button.extend({
         var map = shopItem.getParent()._map;
         building = this.createBuildingFromTag(map, tag);
         map.addChild(building);
-
+        building.onClick();
+        building.showBuildingButton();
     },
 
     createBuildingFromTag: function(map, tag){

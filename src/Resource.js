@@ -4,7 +4,8 @@ var folder_effect = "res/effect/"
 var fontFolder = "res/Art/Fonts/";
 var guiFolder = "res/Art/GUIs/";
 var jsonFolder = "res/ConfigJson/";
-effectFolder = "res/SS/";
+var effectFolder = "res/SS/";
+var folderBuildingActionicon = "res/Art/GUIs/Action_Building_Icon/"
 
 var res = {
     image_postfix_1: "idle/image000",
@@ -118,7 +119,11 @@ var mainGUI = {
     trophy:             guiFolder + "Main_Gui/trophy.png",
     trophyBgBar:        guiFolder + "Main_Gui/trophy_bg_bar.png"
 };
-
+var buildingGUI = {
+    iconInfo : folderBuildingActionicon + "info_icon.png",
+    iconUpgrade: folderBuildingActionicon + "upgrade_icon.png",
+    bg: folderBuildingActionicon + "bg_button.png"
+}
 var g_preload= [
     res.tilemap_tmx,
     res.bgBotLeft,
