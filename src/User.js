@@ -32,7 +32,6 @@ var User = cc.Class.extend({
     11: Builder Hut
      */
 
-
     ctor: function(id, name)
     {
         //this._super();
@@ -44,15 +43,21 @@ var User = cc.Class.extend({
         this._currentCapacityDarkElixir = cf.jsonInitGame["player"]["darkElixir"];
         this._currentCapacityCoin = cf.jsonInitGame["player"]["coin"];
         this.initBuildingList();
-
     },
 
     initBuildingList: function()
     {
         for (var i = 0; i < cf.MAX_BUILDING_TYPE; i++)
         {
-            this._buildingList.push([]);
+            var arr = [];
+            this._buildingList.push(arr);
             this._buildingListCount.push(0);
         }
+    },
+
+    logBuildingListCount: function(){
+        for(var i = 0; i<cf.MAX_BUILDING_TYPE; i++) {
+            cc.log(this._buildingListCount[i]);
+        }
     }
-})
+});
