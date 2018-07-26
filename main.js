@@ -1,3 +1,7 @@
+
+
+var gv = gv || {};
+
 cc.game.onStart = function(){
     cc.view.enableRetina(false);
     // Adjust viewport meta
@@ -8,7 +12,21 @@ cc.game.onStart = function(){
     cc.view.resizeWithBrowserSize(true);
     //load resources
     cc.LoaderScene.preload(g_preload, function () {
-        cc.director.runScene(new MainLayer.scene());
+        fr.clientConfig.init();
+        fr.clientConfig.detectResourceFromScreenSize();
+        if (sys.isNative)
+        {
+            cc.view.setContentScaleFactor(fr.clientConfig.getResourceScale());
+        };
+        fr.clientConfig.updateResourceSearchPath();
+
+        gv.gameClient = new GameClient();
+        gv.poolObjects  = new PoolObject();
+        testnetwork.connector = new testnetwork.Connector(gv.gameClient);
+
+        fr.view(MainLayer)
+        // cc.director.runScene(new MainLayer.scene());
+        // gv.gameClient.connect();
     }, this);
 };
 

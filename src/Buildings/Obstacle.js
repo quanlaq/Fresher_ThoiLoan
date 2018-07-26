@@ -9,4 +9,4 @@ var Obstacle = BuildingNode.extend({
         this._grassShadow.visible = false;
         this.addCenterBuilding("OBS_", 0);
     }
-});
+})

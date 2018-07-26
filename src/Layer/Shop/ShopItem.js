@@ -127,11 +127,7 @@ var ShopItem = ccui.Button.extend({
         var map = shopItem.getParent()._map;
         building = this.createBuildingFromTag(map, tag);
         map.addChild(building);
-        map.addBuildingToUserBuildingList(building);
-        var tmp = building._orderInUserBuildingList*100 + cf.user._buildingListCount[building._orderInUserBuildingList];
-        cf.building_selected = tmp;
-        building.setTag(tmp);
-        building._id = tmp;
+        // map.log_map_array();
         building.onClick();
         building.showBuildingButton();
     },

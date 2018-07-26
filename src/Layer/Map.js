@@ -32,19 +32,81 @@ var Map = cc.Node.extend({
                 if(building !== null) {
                     self.addChild(building);
                     self.addBuildingToUserBuildingList(building);
-                    var tag = building._orderInUserBuildingList*100 + cf.user._buildingListCount[building._orderInUserBuildingList]
-                    building.setTag(tag);
-                    building._id = tag;
                 }
             }
         }
-        for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length; i++)
+
+        // // id, level, row, col
+        // var army_camp = new ArmyCamp(1, 8, cf.jsonInitGame["map"]["AMC_1"]["posX"], cf.jsonInitGame["map"]["AMC_1"]["posY"], true);
+        // //this.locate_map_array(army_camp);
+        // this.addChild(army_camp);
+        // this.addBuildingToUserBuildingList(army_camp);
+        //
+        // // id, level, row, col, size
+        // //var barrack = new Barrack(2, 6, 30, 30);
+        // //this.locate_map_array(barrack)
+        // //this.addChild(barrack);
+        //
+        // // id, level, row, col
+        // var town_hall = new TownHall(3, 8, cf.jsonInitGame["map"]["TOW_1"]["posX"], cf.jsonInitGame["map"]["TOW_1"]["posY"], true);
+        // //this.locate_map_array(town_hall);
+        // this.addChild(town_hall);
+        // this.addBuildingToUserBuildingList(town_hall);
+        //
+        // //
+        // //id, level, row, col, type
+        // var resource_1 = new Resource(4, 8, cf.jsonInitGame["map"]["RES_1"]["posX"], cf.jsonInitGame["map"]["RES_1"]["posY"], true, 1 );
+        // //this.locate_map_array(resource_1)
+        // this.addChild(resource_1);
+        // this.addBuildingToUserBuildingList(resource_1);
+        // //
+        // //var resource_2 = new Resource(5, 8, 15, 17, 2);
+        // //this.locate_map_array(resource_2)
+        // //this.addChild(resource_2);
+        //
+        // //id, order, row, col, type
+        // var builder_hut = new BuilderHut(6, 2, cf.jsonInitGame["map"]["BDH_1"]["posX"], cf.jsonInitGame["map"]["BDH_1"]["posY"], true);
+        // //this.locate_map_array(builder_hut)
+        // this.addChild(builder_hut, 2);
+        // this.addBuildingToUserBuildingList(builder_hut);
+
+        //id, level, row, col, type, current capacity type(random)
+        //var cct = Math.floor(Math.random() * 4);
+        //var storage_1 = new Storage(7, 8, 30, 25, 1, cct);
+        //this.locate_map_array(storage_1);
+        //this.addChild(storage_1, 2)
+        //
+        //cct = Math.floor(Math.random() * 4);
+        //var storage_2 = new Storage(8, 8, 13, 28, 2, cct);
+        //this.locate_map_array(storage_2);
+        //this.addChild(storage_2, 2);
+
+        //id, level, row, col, current orientation(random)
+        //var co = Math.floor(Math.random() * 5)
+        //var canon = new Canon(8, 2, 25, 10, co);
+        //this.locate_map_array(canon);
+        //this.addChild(canon, 2);
+        //
+
+        /* Obstacle */
+        for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length/3; i++)
         {
             var obs = cf.jsonInitGame["obs"][i+1];
-            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
-            tag = i*500;
-            this.addChild(obstacle, 2, tag);
+            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true)
+            //this.locate_map_array(obstacle)
+            this.addChild(obstacle, 2);
+
         }
+
+        //cc.eventManager.addListener(this.get_event_listener(town_hall), town_hall);
+        //cc.eventManager.addListener(this.get_event_listener(army_camp), army_camp);
+        ////cc.eventManager.addListener(this.get_event_listener(barrack), barrack);
+        //cc.eventManager.addListener(this.get_event_listener(resource_1), resource_1);
+        ////cc.eventManager.addListener(this.get_event_listener(resource_2), resource_2);
+        ////cc.eventManager.addListener(this.get_event_listener(storage_1), storage_1);
+        ////cc.eventManager.addListener(this.get_event_listener(storage_2), storage_2);
+        //cc.eventManager.addListener(this.get_event_listener(builder_hut), builder_hut);
+        ////cc.eventManager.addListener(this.get_event_listener(canon), canon);
     },
 
     addBuildingToUserBuildingList: function(b)
@@ -52,6 +114,8 @@ var Map = cc.Node.extend({
         cf.user._buildingList[b._orderInUserBuildingList].push(b);
         cf.user._buildingListCount[b._orderInUserBuildingList] ++;
     },
+
+
 
     initTileLocation: function(){
         cf.map_array.push(0);
@@ -98,7 +162,7 @@ var Map = cc.Node.extend({
         this._tileMap.x = 506*cf.SCALE;
         this._tileMap.y = 481.3*cf.SCALE;
         this._tileMap.scale = cf.SCALE;
-        this.addChild(this._tileMap, 0, 99);
+        this.addChild(this._tileMap, 0, 1);
     },
 
     loadBackground: function() {
@@ -144,7 +208,8 @@ var Map = cc.Node.extend({
         this.addChild(this._bgBotLeft,  1);
     },
 
-    logMapArray: function() {
+    log_map_array: function()
+    {
         for (var r = 1; r < 41; r ++)
         {
             var s = "";
@@ -156,7 +221,8 @@ var Map = cc.Node.extend({
         }
     },
 
-    get_avaiable_position: function(size) {
+    get_avaiable_position: function(size)
+    {
         var flag = false;
         var dis = 100;
         var pos = cc.p(0, 0);

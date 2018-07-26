@@ -15,6 +15,9 @@ var MainLayer = cc.Layer.extend({
     _action1Push: null,
     _action2Push: null,
 
+    _TAG_BG: 24234,
+    _TAG_LOGIN: 534534,
+
     ctor:function () {
         this._super();
         this.setTag(1000000);
@@ -22,10 +25,40 @@ var MainLayer = cc.Layer.extend({
     },
 
     init: function() {
+        var bg = cc.Sprite("res/Art/BG/Capture.PNG");
+        bg.setAnchorPoint(cc.p(0, 0))
+        this.addChild(bg, 0, this._TAG_BG);
+
+        var size = cc.director.getVisibleSize();
+        var yBtn = 2*size.height/3;
+        var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
+        this.addChild(btnLogin, 1, this._TAG_LOGIN);
+        btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+
+        // this.loadJson();
+        // this.initUser();
+        // this.initMap();
+        // this.initMainGUI();
+    },
+
+    onSelectLogin: function()
+    {
+        gv.gameClient.connect()
+    },
+
+    onConnectSuccess: function()
+    {
+        this.removeChildByTag(this._TAG_BG, false);
+        this.removeChildByTag(this._TAG_LOGIN, false);
         this.loadJson();
         this.initUser();
         this.initMap();
         this.initMainGUI();
+    },
+
+    onConnectFail: function()
+    {
+        cc.log("Connect Fail !")
     },
 
     initMap: function()
@@ -53,6 +86,10 @@ var MainLayer = cc.Layer.extend({
         cf.user = new User("uId00001", "GSN Fresher 9 - Team 2");
     },
 
+    log: function(){
+      cc.log("test");
+    },
+
     addShopButton: function(){
         var title = cc.LabelBMFont.create('CỬA HÀNG',  font.soji20);
         var shopButton = new ccui.Button();
@@ -75,8 +112,8 @@ var MainLayer = cc.Layer.extend({
     addBuildingButtons: function() {
         this._guiButtonBuildingInfo = new IconActionBuilding(cf.CODE_BUILDING_INFO);
         this._guiButtonBuildingInfo.attr({
-            anchorX: 0.5,
-            anchorY: 0.5,
+            anchorX: 1,
+            anchorY: 0,
             x: cc.winSize.width / 2,
             y: -200
         });
@@ -84,25 +121,30 @@ var MainLayer = cc.Layer.extend({
 
         this._guiButtonBuildingUpgrade = new IconActionBuilding(cf.CODE_BUILDING_UPGRADE);
         this._guiButtonBuildingUpgrade.attr({
-            anchorX: 0.5,
-            anchorY: 0.5,
+            anchorX: 0,
+            anchorY: 0,
             x: cc.winSize.width / 2,
             y: -200
         });
         this.addChild(this._guiButtonBuildingUpgrade, 2);
     },
 
-    hideListBotButton: function()
+    pushBuildingButtons: function()
     {
-        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - cf.offSetGui*2, -200));
-        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + cf.offSetGui*2, -200));
+
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - cf.offSetGui*2, this._guiButtonBuildingInfo.height));
+
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + cf.offSetGui*2, this._guiButtonBuildingUpgrade.height));
+
     },
 
-    showListBotButton: function() {
-        var moveToPos1 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - cf.offSetGui, this._guiButtonBuildingInfo.height/2*this.scale + cf.offSetGui));
-        this._guiButtonBuildingInfo.runAction(moveToPos1);
-        var moveToPos2 = cc.MoveTo(0.1, cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + cf.offSetGui, this._guiButtonBuildingUpgrade.height/2*this.scale + cf.offSetGui));
-        this._guiButtonBuildingUpgrade.runAction(moveToPos2);
+    pullBuildingButtons: function()
+    {
+
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - cf.offSetGui*2, -200));
+
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + cf.offSetGui*2, -200));
+
     },
 
     //gold,dElixir, Elixir, G visualize
@@ -245,21 +287,18 @@ var MainLayer = cc.Layer.extend({
         if(cf.isDeciding) return;
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
-                var map = this._map;
-                if (cf.building_selected !== 0) {
-                    var buildingSelected = map.getChildByTag(cf.building_selected);
-                    buildingSelected.onEndClick();
-                }
                 sender.setScale(sender.scale*1.1);
                 break;
             case ccui.Widget.TOUCH_MOVED:
                 break;
             case ccui.Widget.TOUCH_ENDED:
+
                 if(this._shop === null) {
                     this._shop = new Shop();
                     this.addChild(this._shop, 10, cf.SHOP_TAG);
                 }
                 sender.setScale(sender.scale/1.1);
+                cc.log("shop opened");
                 this._shop.onAppear();
                 break;
             case ccui.Widget.TOUCH_CANCELED:
@@ -269,6 +308,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     openSetting: function(sender, type){
+        gv.gameClient.connect();
         if(cf.isDeciding) return;
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
@@ -345,6 +385,11 @@ var MainLayer = cc.Layer.extend({
         cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
             cf.ShopItemList = data;
         });
+    },
+
+    logName: function()
+    {
+        cc.log(this.getName() + "Layer Name");
     }
 });
 

@@ -1,5 +1,6 @@
 var cf = cf || {};
 
+
 cf.BIG_MAP_SCALE = 0.5;
 
 cf.SCALE = 1;
@@ -195,6 +196,7 @@ cf.tagToItem = function(tag, lvl, posX, posY, existed){
 };
 
 cf.stringToItemInit = function(str) {
+    cc.log(str);
     switch(str)
     {
         case "TOW_1":
@@ -204,7 +206,9 @@ cf.stringToItemInit = function(str) {
         case "RES_1":
             return new Resource(22, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true, 1);
         case "AMC_1":
-            return new ArmyCamp(24, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
+            return new TownHall(24, 1, cf.jsonInitGame["map"][str]["posX"], cf.jsonInitGame["map"][str]["posY"], true);
         default: return null;
     }
+
+
 };
