@@ -61,12 +61,7 @@
 
         "src/NetWork/testnetwork/network/Network.js",
         "src/NetWork/testnetwork/network/Packet.js",
-        "src/NetWork/testnetwork/ScreenNetwork.js",
-
-        "src/mainmenu/ScreenMenu.js"
-
-
-
+        "src/NetWork/testnetwork/ScreenNetwork.js"
 
     ]
 }

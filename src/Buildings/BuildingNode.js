@@ -158,7 +158,6 @@ var BuildingNode = cc.Node.extend({
                 {
                     self.onEndClick();
                     self.hideBuildingButton();
-                    self.getParent().getParent().pullBuildingButtons();
                     cf.building_selected = 0;
                     listenerMove.setEnabled(false);
                     return false
@@ -171,7 +170,6 @@ var BuildingNode = cc.Node.extend({
             onTouchEnded: function(touch, event) {
                 if(!cf.isMapMoving) {
                     self.onClick();
-                    self.getParent().getParent().pullBuildingButtons();
                     self.showBuildingButton();
                     cf.building_selected = self._id;
                     cf.current_r = self._row;
@@ -288,6 +286,8 @@ var BuildingNode = cc.Node.extend({
     },
 
     onClick: function() {
+        this.getParent().getParent().showListBotButton();
+        this._arrow.visible = true;
         this._green.visible = true;
         var scale_out = cc.scaleTo(0.25, 1.0);
         this._arrow.runAction(scale_out);
@@ -295,9 +295,11 @@ var BuildingNode = cc.Node.extend({
     },
 
     onEndClick: function() {
+        this.getParent().getParent().hideListBotButton();
         var scale_in = cc.scaleTo(0.25, 0);
         this._arrow.runAction(scale_in);
         this._green.visible = false;
+        this._arrow.visible = false;
         this._arrow.setLocalZOrder(this._grassShadow.getLocalZOrder() + 1);
         // this.getParent().getParent().pullBuildingButtons();
     },
@@ -322,7 +324,7 @@ var BuildingNode = cc.Node.extend({
     startBuild: function() {
         this._existed = true;
         this.locate_map_array(this);
-        this._time_remaining = this.getTimeRequire()/60;
+        this._time_remaining = this.getTimeRequire();
         this._time_total = this._time_remaining;
         this._is_active = false;
 
@@ -416,6 +418,7 @@ var BuildingNode = cc.Node.extend({
                     cf.building_selected = self._id;
                     cf.current_r = self._row;
                     cf.current_c = self._col;
+                    self.unlocate_map_array(cf.current_r, cf.current_c, size);
                     return true
                 }
                 else
@@ -467,7 +470,7 @@ var BuildingNode = cc.Node.extend({
                             if (!self.check_out_of_map(row, col, size)) return;
                             cf.r_old = row;
                             cf.c_old = col;
-                            self._row = row
+                            self._row = row;
                             self._col = col;
                             self.setLocalZOrder(200);
                             self.x = cf.tileLocation[self._row][self._col].x;
@@ -524,8 +527,7 @@ var BuildingNode = cc.Node.extend({
     },
 
     check_out_of_map: function(row, col, size) {
-        if (row < 1 || col < 1 || row + size > 41 || col + size > 41) return false;
-        return true;
+        return !(row < 1 || col < 1 || row + size > 41 || col + size > 41);
     },
 
     updateZOrder: function() {

@@ -22,21 +22,23 @@ var Resource = BuildingNode.extend({
         effect.anchorY = 0.5;
 
         this.addChild(effect, this._center_building.getLocalZOrder() + 1);
-        effect.runAction(((this._type == 1) ? cf.animationRes1[this._level].clone() : cf.animationRes2[this._level]).clone().repeatForever());
+        effect.runAction(((this._type === 1) ? cf.animationRes1[this._level].clone() : cf.animationRes2[this._level]).clone().repeatForever());
     },
 
     initAnimation: function()
     {
-        if (this._type == 1 && cf.animationRes1[this._level] == null)
+        if (this._type === 1 && cf.animationRes1[this._level] == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_1_" + this._level + ".plist", res.folder_effect + "effect_res_1_" + this._level + ".png");
             cf.animationRes1[this._level] = MainLayer.get_animation("effect_res_1_" + this._level + " ", 10);
+            cf.animationRes1[this._level].retain();
         }
 
-        if (this._type == 2 && cf.animationRes2[this._level] == null)
+        if (this._type === 2 && cf.animationRes2[this._level] == null)
         {
             cc.spriteFrameCache.addSpriteFrames(res.folder_effect + "effect_res_2_" + this._level + ".plist", res.folder_effect + "effect_res_2_" + this._level + ".png");
             cf.animationRes2[this._level] = MainLayer.get_animation("effect_res_2_" + this._level + " ", 10);
+            cf.animationRes2[this._level].retain();
         }
     }
 })
