@@ -26,7 +26,8 @@ testnetwork.Connector = cc.Class.extend({
                 fr.getCurrentScreen().onFinishLogin();
                 break;
             case gv.CMD.USER_INFO:
-                fr.getCurrentScreen().onUserInfo(packet.name, packet.x, packet.y);
+                //fr.getCurrentScreen().onUserInfo(packet.name, packet.x, packet.y);
+                fr.getCurrentScreen().onReceiveUserInfo();
                 break;
             case gv.CMD.MOVE:
                 cc.log("MOVE:", packet.x, packet.y);
@@ -47,12 +48,20 @@ testnetwork.Connector = cc.Class.extend({
         pk.pack(this._userName);
         this.gameClient.sendPacket(pk);
     },
-    sendMove:function(direction){
-        cc.log("SendMove:" + direction);
-        var pk = this.gameClient.getOutPacket(CmdSendMove);
-        pk.pack(direction);
+    sendBuild: function(id, row, col)
+    {
+        cc.log("Send Build: " + id + " row: " + row + " col: " + col);
+        var pk = this.gameClient.getOutPacket(CmdSendBuild);
+        pk.pack(id, row, col);
         this.gameClient.sendPacket(pk);
-    }
+    },
+    sendMove:function(id, row, col){
+        cc.log("SendMove:" + id + " row: " + row + " col: " + col);
+        var pk = this.gameClient.getOutPacket(CmdSendMove);
+        pk.pack(id, row, col);
+        this.gameClient.sendPacket(pk);
+    },
+
 });
 
 

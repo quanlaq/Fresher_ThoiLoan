@@ -20,32 +20,64 @@ var Map = cc.Node.extend({
         this._width = (this._bgBotLeft.width + this._bgBotRight.width)*cf.bgSCALE;
         this._height = (this._bgBotLeft.height + this._bgTopLeft.height)*cf.bgSCALE;
         this.initTileLocation();
-        this.add_building();
+        this.addBuildingFromServer();
+        //this.add_building();
     },
 
-    add_building: function()
+    addBuildingFromServer: function()
     {
         var self = this;
-        for(var key in cf.jsonInitGame["map"]) {
-            if(cf.jsonInitGame["map"].hasOwnProperty(key)) {
-                var building = cf.stringToItemInit(key);
-                if(building !== null) {
-                    self.addChild(building);
-                    self.addBuildingToUserBuildingList(building);
-                    var tag = building._orderInUserBuildingList*100 + cf.user._buildingListCount[building._orderInUserBuildingList]
-                    building.setTag(tag);
-                    building._id = tag;
+        for (var key in gv.jsonInfo["map"])
+        {
+            if (gv.jsonInfo["map"].hasOwnProperty(key))
+            {
+                for (var j=0; j < gv.jsonInfo["map"][key].length ; j++)
+                {
+                    var building = cf.stringToItemInit(key, j);
+                    if (building != null)
+                    {
+                        self.addChild(building);
+                        self.addBuildingToUserBuildingList(building);
+                        if(building._existed) building.locate_map_array(building);
+                        //building.locate_map_array(building._row, building._col, building._size);
+                    }
                 }
             }
         }
-        for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length; i++)
-        {
-            var obs = cf.jsonInitGame["obs"][i+1];
-            var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
-            tag = i*500;
-            this.addChild(obstacle, 2, tag);
-        }
+
+
+        for (var i = 0; i < Object.keys(gv.json.initGame["obs"]).length; i++)
+               {
+                   var obs = gv.json.initGame["obs"][i+1];
+                   var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
+                   var tag = i*500;
+                   this.addChild(obstacle, 2, tag);
+               }
     },
+
+    //add_building: function()
+    //{
+    //    var self = this;
+    //    for(var key in cf.jsonInitGame["map"]) {
+    //        if(cf.jsonInitGame["map"].hasOwnProperty(key)) {
+    //            var building = cf.stringToItemInit(key);
+    //            if(building !== null) {
+    //                self.addChild(building);
+    //                self.addBuildingToUserBuildingList(building);
+    //                var tag = building._orderInUserBuildingList*100 + cf.user._buildingListCount[building._orderInUserBuildingList]
+    //                building.setTag(tag);
+    //                building._id = tag;
+    //            }
+    //        }
+    //    }
+    //    for (var i = 0; i < Object.keys(cf.jsonInitGame["obs"]).length; i++)
+    //    {
+    //        var obs = cf.jsonInitGame["obs"][i+1];
+    //        var obstacle = new Obstacle(i + 15, obs["type"], obs["posX"], obs["posY"], true);
+    //        tag = i*500;
+    //        this.addChild(obstacle, 2, tag);
+    //    }
+    //},
 
     addBuildingToUserBuildingList: function(b)
     {

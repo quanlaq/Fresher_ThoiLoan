@@ -3,9 +3,10 @@ var ArmyCamp = BuildingNode.extend({
 
     ctor: function(id, level, row, col, existed)
     {
-        this._size = cf.jsonArmyCamp["AMC_1"][level]["width"];
-        this._CENTER_BUILDING_STR = "AMC_1_";
-        this._orderInUserBuildingList = 8;
+        this._buildingSTR = gv.buildingSTR.armyCamp_1;
+        this._size = gv.json.armyCamp[this._buildingSTR][level]["width"];
+        this._orderInUserBuildingList = gv.orderInUserBuildingList.armyCamp_1;
+        this._name = gv.buildingName.armyCamp_1;
 
         this._super(id, level, row, col, existed);
 
@@ -13,7 +14,7 @@ var ArmyCamp = BuildingNode.extend({
         this.initAnimation();
 
         /* Add Center Building */
-        this.addCenterBuilding(this._CENTER_BUILDING_STR);
+        this.addCenterBuilding();
 
         /* Add Effect */
         var effect = cc.Sprite(res.tmp_effect);

@@ -1,11 +1,12 @@
 var MainLayer = cc.Layer.extend({
     _map: null,
     _shop: null,
+
     _resBarGold: null,
     _resBarElixir: null,
     _resBarDarkElixir: null,
-    _resBarDarkElixir: null,
     _resBarCoin: null,
+    _builderBar: null,
 
     _guiButtonBuildingInfo: null,
     _guiButtonBuildingUpgrade: null,
@@ -17,6 +18,7 @@ var MainLayer = cc.Layer.extend({
 
     _TAG_BG: 242342,
     _TAG_LOGIN: 534534,
+    _TAG_OFFLINE_MODE: 454535,
 
     ctor:function () {
         this._super();
@@ -25,20 +27,20 @@ var MainLayer = cc.Layer.extend({
     },
 
     init: function() {
-        // var bg = cc.Sprite("res/Art/BG/Capture.PNG");
-        // bg.setAnchorPoint(cc.p(0, 0))
-        // this.addChild(bg, 0, this._TAG_BG);
-        //
-        // var size = cc.director.getVisibleSize();
-        // var yBtn = 2*size.height/3;
-        // var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
-        // this.addChild(btnLogin, 1, this._TAG_LOGIN);
-        // btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+         var bg = cc.Sprite("res/Art/BG/Capture.PNG");
+         bg.setAnchorPoint(cc.p(0, 0))
+         this.addChild(bg, 0, this._TAG_BG);
 
+         var size = cc.director.getVisibleSize();
+         var yBtn = 2*size.height/3;
+         var btnLogin = gv.commonButton(200, 64, size.width/4, yBtn,"Login");
+         this.addChild(btnLogin, 1, this._TAG_LOGIN);
+         btnLogin.addClickEventListener(this.onSelectLogin.bind(this));
+
+         var btnOfflineMode = gv.commonButton(200, 64, size.width/4, yBtn/2, "Offline Mode");
+         this.addChild(btnOfflineMode, 1, this._TAG_OFFLINE_MODE);
+         btnOfflineMode.addClickEventListener(this.onSelectOfflineMode.bind(this));
         this.loadJson();
-        this.initUser();
-        this.initMap();
-        this.initMainGUI();
     },
 
     onSelectLogin: function()
@@ -47,15 +49,21 @@ var MainLayer = cc.Layer.extend({
         gv.gameClient.connect()
     },
 
+    onSelectOfflineMode: function()
+    {
+        this.initUser();
+        this.initMainGUI();
+        this.initMap();
+        this.updateGUIandUserInfo();
+
+    },
+
     onConnectSuccess: function()
     {
         cc.log("=============== " + "Connect Success => Send Handshake");
         this.removeChildByTag(this._TAG_BG, false);
         this.removeChildByTag(this._TAG_LOGIN, false);
-        this.loadJson();
-        this.initUser();
-        this.initMap();
-        this.initMainGUI();
+        this.removeChildByTag(this._TAG_OFFLINE_MODE, false);
     },
 
     onConnectFail: function()
@@ -70,15 +78,19 @@ var MainLayer = cc.Layer.extend({
         cc.log("=============== " + "Finish Login");
     },
 
-    initMap: function()
+    onReceiveUserInfo: function()
     {
-        this._map = new Map();
-        this._map.anchorX = 0;
-        this._map.anchorY = 0;
-        var centering = cc.p(-this._map._width/2 * this._map.scale + cc.winSize.width/2, -this._map._height/2 * this._map.scale + cc.winSize.height/2)
-        this._map.setPosition(centering);
-        this.addChild(this._map, 0, "MAP");
-        this.moveMap();
+        //this.removeChildByTag(this._TAG_MAP);
+        this.initUser();
+        this.initMainGUI();
+        this.initMap();
+        this.updateGUIandUserInfo();
+
+    },
+
+    initUser: function()
+    {
+        cf.user = new User();
     },
 
     initMainGUI: function() {
@@ -87,14 +99,69 @@ var MainLayer = cc.Layer.extend({
         this.addInventoryButton();
         this.addBuildingButtons();
         this.addResourceBar();
-        this.addUserInfo();
+        this.addUserBar();
+        this.addBuilderBar();
     },
 
-    initUser: function()
+    initMap: function()
     {
-        cf.user = new User("uId00001", "GSN Fresher 9 - Team 2");
+        this._map = new Map();
+        this._map.anchorX = 0;
+        this._map.anchorY = 0;
+        var centering = cc.p(-this._map._width/2 * this._map.scale + cc.winSize.width/2, -this._map._height/2 * this._map.scale + cc.winSize.height/2)
+        this._map.setPosition(centering);
+        this.addChild(this._map, 0, gv.tag.TAG_MAP);
+        this.moveMap();
     },
 
+    updateGUIandUserInfo: function()
+    {
+        cf.user.updateMaxStorage();
+        cf.user.updateBuilder();
+    },
+
+    addResourceBar: function() {
+        this._resBarGold = new GUI_ResourceBar(1);
+        this._resBarGold.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
+        });
+        this.addChild(this._resBarGold, 1, gv.tag.TAG_RESOURCE_BAR_GOLD);
+
+        this._resBarElixir = new GUI_ResourceBar(2);
+        this._resBarElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
+        });
+        this.addChild(this._resBarElixir, 1, gv.tag.TAG_RESOURCE_BAR_ELIXIR);
+
+        this._resBarDarkElixir = new GUI_ResourceBar(3);
+        this._resBarDarkElixir.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
+        });
+        this.addChild(this._resBarDarkElixir, 1, gv.tag.TAG_RESOURCE_BAR_DARK_ELIXIR);
+
+        this._resBarCoin = new GUI_ResourceBar(4);
+        this._resBarCoin.attr({
+            x: cc.winSize.width - cf.offSetGui,
+            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
+        });
+        this.addChild(this._resBarCoin, 1, gv.tag.TAG_RESOURCE_BAR_COIN);
+    },
+
+    addBuilderBar: function()
+    {
+        this._builderBar = new BuilderBar();
+        this._builderBar.attr({
+        anchorX: 0.5,
+        anchorY: 1,
+        x: cc.winSize.width/2,
+        y: cc.winSize.height - cf.offSetGui*1.5}
+        );
+
+        this.addChild(this._builderBar, 1, gv.tag.TAG_BUILDER_BAR);
+    },
     addShopButton: function(){
         var title = cc.LabelBMFont.create('CỬA HÀNG',  font.soji20);
         var shopButton = new ccui.Button();
@@ -115,6 +182,7 @@ var MainLayer = cc.Layer.extend({
     },
 
     addBuildingButtons: function() {
+        /* Button Info */
         this._guiButtonBuildingInfo = new IconActionBuilding(cf.CODE_BUILDING_INFO);
         this._guiButtonBuildingInfo.attr({
             anchorX: 0.5,
@@ -124,6 +192,8 @@ var MainLayer = cc.Layer.extend({
         });
         this.addChild(this._guiButtonBuildingInfo, 2);
 
+
+        /* Button Upgrade */
         this._guiButtonBuildingUpgrade = new IconActionBuilding(cf.CODE_BUILDING_UPGRADE);
         this._guiButtonBuildingUpgrade.attr({
             anchorX: 0.5,
@@ -132,12 +202,17 @@ var MainLayer = cc.Layer.extend({
             y: -200
         });
         this.addChild(this._guiButtonBuildingUpgrade, 2);
+
+        this._guiButtonBuildingUpgrade.addClickEventListener(function()
+        {
+            cc.log(gv.building_selected  + " Select Upgrade");
+        }.bind(this))
     },
 
     hideListBotButton: function()
     {
-        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - cf.offSetGui*2, -200));
-        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + cf.offSetGui*2, -200));
+        this._guiButtonBuildingInfo.setPosition(cc.p(cc.winSize.width/2 - this._guiButtonBuildingInfo.width/2 - 2 * cf.offSetGui, -200));
+        this._guiButtonBuildingUpgrade.setPosition(cc.p(cc.winSize.width/2 + this._guiButtonBuildingUpgrade.width/2 + 2 * cf.offSetGui, -200));
     },
 
     showListBotButton: function() {
@@ -147,43 +222,12 @@ var MainLayer = cc.Layer.extend({
         this._guiButtonBuildingUpgrade.runAction(moveToPos2);
     },
 
-    //gold,dElixir, Elixir, G visualize
-    addResourceBar: function() {
-        this._resBarGold = new GUI_ResourceBar(1);
-        this._resBarGold.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 30,
-        });
-        this.addChild(this._resBarGold);
-
-        this._resBarElixir = new GUI_ResourceBar(2);
-        this._resBarElixir.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 80,
-        });
-        this.addChild(this._resBarElixir);
-
-        this._resBarDarkElixir = new GUI_ResourceBar(3);
-        this._resBarDarkElixir.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 130,
-        });
-        this.addChild(this._resBarDarkElixir);
-
-        this._resBarCoin = new GUI_ResourceBar(4);
-        this._resBarCoin.attr({
-            x: cc.winSize.width - cf.offSetGui,
-            y: cc.winSize.height - this._resBarGold.height - cf.offSetGui - 180,
-        });
-        this.addChild(this._resBarCoin);
-    },
-
     //Exp, Trophy, Username, UserInfo
-    addUserInfo: function() {
+    addUserBar: function() {
         var userName = cc.LabelBMFont(cf.user._name, font.soji20);
         userName.setAnchorPoint(cc.p(0, 1));
         userName.setPosition(cc.p(cf.offSetGui, cc.winSize.height - cf.offSetGui));
-        this.addChild(userName)
+        this.addChild(userName, 1)
     },
 
     addSettingButton: function() {
@@ -229,7 +273,7 @@ var MainLayer = cc.Layer.extend({
             onTouchMoved: function(touch, event) {
                 // var self = event.getCurrentTarget()
                 cf.isMapMoving = true;
-                if (cf.building_selected !== 0)
+                if (gv.building_selected !== 0)
                     return
                 var delta = touch.getDelta();
                 var curPos = cc.p(self._map.x, self._map.y);
@@ -288,9 +332,9 @@ var MainLayer = cc.Layer.extend({
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
                 var map = this._map;
-                if (cf.building_selected !== 0) {
-                    var buildingSelected = map.getChildByTag(cf.building_selected);
-                    buildingSelected.onEndClick();
+                if (gv.building_selected !== 0) {
+                        var buildingSelected = map.getChildByTag(gv.building_selected);
+                        if(buildingSelected !== null) buildingSelected.onEndClick();
                 }
                 sender.setScale(sender.scale*1.1);
                 break;
@@ -354,38 +398,44 @@ var MainLayer = cc.Layer.extend({
 
     loadJson:function () {
         cc.loader.loadJson(res.armyCampJson, function(err, data){
-            cf.jsonArmyCamp = data;
+            gv.json.armyCamp = data;
         });
-
         cc.loader.loadJson(res.barrackJson, function(err, data){
-            cf.jsonBarrack = data;
+            gv.json.barrack = data;
         });
         cc.loader.loadJson(res.builderHutJson, function(err, data){
-            cf.jsonBuilderHut = data;
+            gv.json.builderHut = data;
         });
         cc.loader.loadJson(res.initGameJson, function(err, data){
-            cf.jsonInitGame = data;
+            gv.json.initGame = data;
         });
         cc.loader.loadJson(res.laboratoryJson, function(err, data){
-            cf.jsonLaboratory = data;
+            gv.json.laboratory = data;
         });
         cc.loader.loadJson(res.resourceJson, function(err, data){
-            cf.jsonResource = data;
+            gv.json.resource = data;
         });
         cc.loader.loadJson(res.storageJson, function(err, data){
-            cf.jsonStorage = data;
+            gv.json.storage = data;
         });
         cc.loader.loadJson(res.townHallJson, function(err, data){
-            cf.jsonTownHall = data;
+            gv.json.townHall = data;
         });
         cc.loader.loadJson(res.troopJson, function(err, data){
-            cf.jsonTroop = data;
+            gv.json.troop = data;
         });
         cc.loader.loadJson(res.troopBaseJson, function(err, data){
-            cf.jsonTroopBase = data;
+            gv.json.troopBase = data;
         });
-        cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
-            cf.ShopItemList = data;
+        cc.loader.loadJson(res.shopItemList, function(error, data){
+            gv.json.shopItemList = data;
+        });
+
+        //cc.loader.loadJson("res/ConfigJson/ShopList.json", function(error, data){
+        //    cf.ShopItemList = data;
+        //});
+        cc.loader.loadJson(res.obstacleJson, function(error, data){
+            gv.json.obstacle = data;
         });
     }
 });

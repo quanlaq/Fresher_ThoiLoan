@@ -8,6 +8,7 @@ var BuildingNode = cc.Node.extend({
     _type: null,
     _is_active: true,
     _finishing_time: null,
+    _name: null,
 
     _center_building: null,
     _grass: null,
@@ -16,6 +17,7 @@ var BuildingNode = cc.Node.extend({
     _green:null,
     _red: null,
     _defence: null,
+    _txtName: null,
 
     /* Button Commit & Cancel Build */
     _gui_commit_build: null,
@@ -31,12 +33,13 @@ var BuildingNode = cc.Node.extend({
     _BAR_HEIGHT: 36,
     _effect_level_up: null,
 
-    _CENTER_BUILDING_STR: null,
+    _buildingSTR: null,
 
     /* Order In User Building List */
     _orderInUserBuildingList: null,
 
     _listener: null,
+    _listenerMove: null,
 
     ctor: function(id, level, row, col, existed) {
         this._super();
@@ -47,6 +50,21 @@ var BuildingNode = cc.Node.extend({
         this._col = col;
         this._level = level;
 
+        this._txtName = cc.LabelBMFont(this._name, font.soji20);
+        this._txtName.setColor(cc.color(189,183,107, 255));
+        this.addChild(this._txtName, 50);
+        this._txtName.setAnchorPoint(cc.p(0.5, 0.5));
+        this._txtName.setPosition(cc.p(0, this._size * cf.tileSize.height / 2))
+        this._txtName.visible = false;
+
+        //Set Id
+        var tmp = (this._orderInUserBuildingList + 1).toString();
+        if(cf.user._buildingListCount[this._orderInUserBuildingList] >= 10) {
+            tmp += cf.user._buildingListCount[this._orderInUserBuildingList].toString();
+        } else tmp = tmp + "0" + cf.user._buildingListCount[this._orderInUserBuildingList].toString();
+        var tag= parseInt(tmp);
+        this.setTag(tag);
+        this._id = tag;
 
         //grass
         this._grass = new grass(this._size);
@@ -59,7 +77,7 @@ var BuildingNode = cc.Node.extend({
         this._grassShadow.scale = this._grass.scale;
 
         //arrow
-        this._arrow = cc.Sprite(res.map_BG + "arrowmove" + (this._size ) + ".png")
+        this._arrow = cc.Sprite(res.buildingOnMoveGUI(gv.buildOnMoveGUI.arrow, this._size))
         this._arrow.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -67,8 +85,9 @@ var BuildingNode = cc.Node.extend({
         });
         this.addChild(this._arrow, this._grassShadow.getLocalZOrder() + 1);
 
+
         //green
-        this._green = cc.Sprite(res.map_BG + "GREEN_" + (this._size ) + ".png");
+        this._green = cc.Sprite(res.buildingOnMoveGUI(gv.buildOnMoveGUI.green, this._size));
         this._green.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -78,7 +97,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._green, this._arrow.getLocalZOrder() + 1);
 
         //red
-        this._red = cc.Sprite(res.map_BG + "RED_" + (this._size ) + ".png");
+        this._red = cc.Sprite(res.buildingOnMoveGUI(gv.buildOnMoveGUI.red, this._size));
         this._red.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -88,7 +107,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._red, this._green.getLocalZOrder() + 1);
 
         //defence
-        this._defence = cc.Sprite(res.map_obj + "upgrading.png");
+        this._defence = cc.Sprite(buildingGUI.defence);
         this._defence.attr({
             anchorX: 0.5,
             anchorY: 0.75,
@@ -98,7 +117,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._defence, 20);
 
         //Button commit build
-        this._gui_commit_build = ccui.Button(res.folder_gui_action_building + "accept.png");
+        this._gui_commit_build = ccui.Button(buildingGUI.buildCommit);
         this._gui_commit_build.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -109,7 +128,7 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._gui_commit_build, this._defence.getLocalZOrder() + 1);
 
         //Button cancel build
-        this._gui_cancel_build = ccui.Button(res.folder_gui_action_building + "cancel.png");
+        this._gui_cancel_build = ccui.Button(buildingGUI.buildCancel);
         this._gui_cancel_build.attr({
             anchorX: 0.5,
             anchorY: 0.5,
@@ -125,7 +144,8 @@ var BuildingNode = cc.Node.extend({
 
 
         //Update zOrder
-        if(this._existed) this.updateZOrder();
+        if(this._existed)
+            this.updateZOrder();
         else this.setLocalZOrder(200);
 
         /* Effect Level Up */
@@ -138,8 +158,8 @@ var BuildingNode = cc.Node.extend({
 
         /* Add event listener */
 
-        var listenerMove = this.get_event_listener(this);
-        cc.eventManager.addListener(listenerMove, this);
+        this._listenerMove = this.get_event_listener(this);
+        cc.eventManager.addListener(this._listenerMove, this);
         var self = this;
         this._listener = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -153,13 +173,17 @@ var BuildingNode = cc.Node.extend({
                 var y = locationNote.y;
                 var polygon = [ [ -w, 0 ], [ 0, h ], [ w, 0 ], [ 0, -h ] ];
 
-                if (MainLayer.inside([x, y], polygon) && (cf.building_selected !== self._id)) return true;
+                if (MainLayer.inside([x, y], polygon) && (cf.building_selected !== self._id))
+                {
+                    self._txtName.visible = true;
+                    return true;
+                }
                 else
                 {
                     self.onEndClick();
                     self.hideBuildingButton();
                     cf.building_selected = 0;
-                    listenerMove.setEnabled(false);
+                    self._listenerMove.setEnabled(false);
                     return false
                 }
                 cf.r_old = self._row;
@@ -169,19 +193,20 @@ var BuildingNode = cc.Node.extend({
 
             onTouchEnded: function(touch, event) {
                 if(!cf.isMapMoving) {
+                    self.getParent().getParent().showListBotButton();
                     self.onClick();
                     self.showBuildingButton();
                     cf.building_selected = self._id;
                     cf.current_r = self._row;
                     cf.current_c = self._col;
-                    listenerMove.setEnabled(true);
+                    self._listenerMove.setEnabled(true);
                     this.setEnabled(false);
                 }
             }
         });
-        if(this._existed) listenerMove.setEnabled(false);
+        if(this._existed) this._listenerMove.setEnabled(false);
         else {
-            listenerMove.setEnabled(true);
+            this._listenerMove.setEnabled(true);
             this._listener.setEnabled(false);
             cf.current_c = self._col;
             cf.current_r = self._row;
@@ -211,15 +236,27 @@ var BuildingNode = cc.Node.extend({
         if (this._time_remaining <= 0)
         {
             this.onCompleteBuild();
-            this._is_active = true;
-            this.return;
+            return;
         }
         this._time_remaining -= 1;
-        this._txt_time_remaining.setString(Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s");
+
+        var seconds = this._time_remaining;
+
+        var days = Math.floor(seconds / (3600*24));
+        seconds  -= days*3600*24;
+        var hrs   = Math.floor(seconds / 3600);
+        seconds  -= hrs*3600;
+        var mnts = Math.floor(seconds/ 60);
+        seconds  -= mnts*60;
+        var timeRemaining = (days !== 0 ? (days.toString() + "d") : "" ) + (hrs !== 0 ? (hrs.toString() + "h") : "") + (mnts !== 0 ? (mnts.toString() + "m") : "") + seconds.toString() + "s";
+
+        //var timeRemaining = Math.floor(this._time_remaining / 60 / 60/ 24) + "d" + Math.floor(this._time_remaining / 60 / 60) + "h" + Math.floor(this._time_remaining / 60) + "m" + (this._time_remaining % 60) + "s"
+        this._txt_time_remaining.setString(timeRemaining);
         this._info_bar_bg.setTextureRect(cc.rect(0, 0, this._BAR_WIDTH * (this._time_total - this._time_remaining) / this._time_total, this._BAR_HEIGHT))
     },
 
     onCompleteBuild: function() {
+        this._is_active = true;
         this._effect_level_up.visible = true;
         if (cf.animationConstructLevelUp == null)
         {
@@ -229,101 +266,23 @@ var BuildingNode = cc.Node.extend({
         this._info_bar.visible = false;
         this._info_bar_bg.visible = false;
         this._defence.visible = false;
-
         this._effect_level_up.runAction(cc.Sequence(MainLayer.get_animation("effect_construct_levelup ", 6).clone()).clone());
-    },
+        //cf.user.updateResource();
 
-    addCenterBuilding: function(str) {
+        var order = this._orderInUserBuildingList;
+        if (order == gv.orderInUserBuildingList.townHall || order == gv.orderInUserBuildingList.storage_1 || order == gv.orderInUserBuildingList.storage_2 || order == gv.orderInUserBuildingList.storage_3)
+            cf.user.updateMaxStorageSingle(this._id);
 
-        this._CENTER_BUILDING_STR = str;
+        /* Update user infor && GUI */
+            cf.user._builderFree ++;
+        cf.user.updateSingleBuilder();
 
-        if (this._CENTER_BUILDING_STR !== "OBS_")
-        {
-            cc.eventManager.addListener(this._listener, this);
-        }
-        switch(str)
-        {
-            case "TOW_1_":
-                this._center_building = cc.Sprite(res.folder_town_hall + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "BDH_1":
-                this._center_building = cc.Sprite(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "AMC_1_":
-                this._center_building = cc.Sprite(res.folder_army_camp + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "BAR_1_":
-                this._center_building = cc.Sprite(res.folder_barrack + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "RES_1_":
-                this._center_building = cc.Sprite(res.folder_gold_mine + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "RES_2_":
-                this._center_building = cc.Sprite(res.folder_elixir_collector + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "STO_1_":
-                this._center_building = cc.Sprite(res.folder_gold_storage + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "STO_2_":
-                this._center_building = cc.Sprite(res.folder_elixir_storage + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "canon_":
-                this._center_building = cc.Sprite(res.folder_canon + str + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            case "OBS_":
-                this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
-                break;
-            default:
-                break;
-        }
 
-        this._center_building.attr({
-            anchorX: 0.5,
-            anchorY: 0.5
-        });
-        this.addChild(this._center_building, this._defence.getLocalZOrder() - 1);
-
-    },
-
-    onClick: function() {
-        this.getParent().getParent().showListBotButton();
-        this._arrow.visible = true;
-        this._green.visible = true;
-        var scale_out = cc.scaleTo(0.25, 1.0);
-        this._arrow.runAction(scale_out);
-        this._arrow.setGlobalZOrder(50);
-    },
-
-    onEndClick: function() {
-        this.getParent().getParent().hideListBotButton();
-        var scale_in = cc.scaleTo(0.25, 0);
-        this._arrow.runAction(scale_in);
-        this._green.visible = false;
-        this._arrow.visible = false;
-        this._arrow.setLocalZOrder(this._grassShadow.getLocalZOrder() + 1);
-        // this.getParent().getParent().pullBuildingButtons();
-    },
-
-    showBuildingButton: function() {
-        var self = this;
-        if(!this._existed) {
-            this._gui_cancel_build.visible = true;
-            this._gui_commit_build.visible = true;
-        }
-        this._gui_cancel_build.addClickEventListener(function(){
-            cf.isDeciding = false;
-            self.hideBuildingButton();
-            self.getParent().removeChild(self);
-        });
-        this._gui_commit_build.addClickEventListener(function(){
-            self.startBuild();
-            cf.isDeciding = false;
-        });
     },
 
     startBuild: function() {
         this._existed = true;
-        this.locate_map_array(this);
+        //this.locate_map_array(this);
         this._time_remaining = this.getTimeRequire();
         this._time_total = this._time_remaining;
         this._is_active = false;
@@ -349,7 +308,17 @@ var BuildingNode = cc.Node.extend({
         this.addChild(this._info_bar_bg, this._defence.getLocalZOrder() + 1);
 
         /* Time Text */
-        this._txt_time_remaining = cc.LabelBMFont.create(Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s",  font.soji20);
+        var seconds = this._time_total;
+        var days = Math.floor(seconds / (3600*24));
+        seconds  -= days*3600*24;
+        var hrs   = Math.floor(seconds / 3600);
+        seconds  -= hrs*3600;
+        var mnts = Math.floor(seconds/ 60);
+        seconds  -= mnts*60;
+        var timeRemaining = (days !== 0 ? (days.toString() + "d") : "" ) + (hrs !== 0 ? (hrs.toString() + "h") : "") + (mnts !== 0 ? (mnts.toString() + "m") : "") + seconds.toString() + "s";
+
+        //var timeRemaining = Math.floor(this._time_total / 60 / 60/ 24) + "d" + Math.floor(this._time_total / 60 / 60) + "h" + Math.floor(this._time_total / 60) + "m" + (this._time_total % 60) + "s"
+        this._txt_time_remaining = cc.LabelBMFont.create(timeRemaining,  font.soji20);
         this._txt_time_remaining.attr({
             anchorX: 0.5,
             anchorY: 0,
@@ -360,34 +329,146 @@ var BuildingNode = cc.Node.extend({
 
         this._defence.visible = true;
 
+        /* Update Builder */
+        cf.user._builderFree --;
+        cf.user.updateSingleBuilder();
+
         this.hideBuildingButton();
     },
 
     getTimeRequire: function() {
-        switch (this._CENTER_BUILDING_STR)
+        var json = null;
+        switch (this._buildingSTR)
         {
-            case "TOW_1_":
-                return (cf.jsonTownHall["TOW_1"][this._level]["buildTime"]);
-            case "BDH_1":
-                return 0;
-            case "AMC_1_":
-                return (cf.jsonArmyCamp["AMC_1"][this._level]["buildTime"]);
-            case "BAR_1_":
-                return (cf.jsonBarrack["BAR_1"][this._level]["buildTime"]);
-            case "RES_1_":
-                return (cf.jsonResource["RES_1"][this._level]["buildTime"]);
-            case "RES_2_":
-                return (cf.jsonResource["RES_2"][this._level]["buildTime"]);
-            case "STO_1_":
-                return (cf.jsonStorage["STO_1"][this._level]["buildTime"]);
-            case "STO_2_":
-                return (cf.jsonStorage["STO_2"][this._level]["buildTime"]);
+            case gv.buildingSTR.townHall:
+                json = gv.json.townHall;
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                json = gv.json.armyCamp;
+                break;
+            case gv.buildingSTR.barrack_1:
+                json = gv.json.barrack;
+                break;
+            case gv.buildingSTR.resource_1:
+                json = gv.json.resource;
+                break;
+            case gv.buildingSTR.resource_2:
+                json = gv.json.resource;
+                break;
+            case gv.buildingSTR.storage_1:
+                json = gv.json.storage;
+                break;
+            case gv.buildingSTR.storage_2:
+                json = gv.json.storage;
+                break;
             case "canon_":
                 return this._level * 150;
+            case gv.buildingSTR.builderHut:
+                return 0;
             default:
                 break;
         }
+
+        return (json[this._buildingSTR][this._level]["buildTime"]);
+
     },
+
+    addCenterBuilding: function() {
+        if (this._buildingSTR !== gv.buildingSTR.obstacle)
+        {
+            cc.eventManager.addListener(this._listener, this);
+        }
+        var str = this._buildingSTR;
+        switch(str)
+        {
+            case gv.buildingSTR.townHall:
+                this._center_building = cc.Sprite(res.folder_town_hall + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.builderHut:
+                this._center_building = cc.Sprite(res.folder_builder_hut + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.armyCamp_1:
+                this._center_building = cc.Sprite(res.folder_army_camp + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);;
+                break;
+            case gv.buildingSTR.barrack_1:
+                this._center_building = cc.Sprite(res.folder_barrack + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.resource_1:
+                this._center_building = cc.Sprite(res.folder_gold_mine + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.resource_2:
+                this._center_building = cc.Sprite(res.folder_elixir_collector + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.storage_1:
+                this._center_building = cc.Sprite(res.folder_gold_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.storage_2:
+                this._center_building = cc.Sprite(res.folder_elixir_storage + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.canon:
+                this._center_building = cc.Sprite(res.folder_canon + str + "_" + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            case gv.buildingSTR.obstacle:
+                this._center_building = cc.Sprite(res.folder_obs + this._level + "/" + res.image_postfix_1 + "0" + res.image_postfix_2);
+                break;
+            default:
+                break;
+        }
+
+        this._center_building.attr({
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+        this.addChild(this._center_building, this._defence.getLocalZOrder() - 1);
+
+    },
+
+    onClick: function() {
+        this._arrow.visible = true;
+        this._green.visible = true;
+        var scale_out = cc.scaleTo(0.25, 1.0);
+        this._arrow.runAction(scale_out);
+        this._arrow.setGlobalZOrder(50);
+    },
+
+    onEndClick: function() {
+        this.getParent().getParent().hideListBotButton();
+        var scale_in = cc.scaleTo(0.25, 0);
+        this._arrow.runAction(scale_in);
+        this._green.visible = false;
+        this._arrow.visible = false;
+        this._txtName.visible = false;
+        this._arrow.setLocalZOrder(this._grassShadow.getLocalZOrder() + 1);
+        // this.getParent().getParent().pullBuildingButtons();
+    },
+
+    showBuildingButton: function() {
+        var self = this;
+        if(!this._existed) {
+            this._gui_cancel_build.visible = true;
+            this._gui_commit_build.visible = true;
+        }
+        this._gui_cancel_build.addClickEventListener(function(){
+            cf.isDeciding = false;
+            self.hideBuildingButton();
+            self.getParent().removeChild(self);
+        });
+        this._gui_commit_build.addClickEventListener(function(){
+            if(!self._red.visible) {
+                self.locate_map_array(self);
+                self.startBuild();
+                self.onEndClick();
+                self.hideBuildingButton();
+                self.getParent().addBuildingToUserBuildingList(self);
+                self.updateZOrder();
+                cf.building_selected = 0;
+                cf.isDeciding = false;
+                testnetwork.connector.sendBuild(self._id, self._row, self._col);
+            }
+        });
+    },
+
+
 
     hideBuildingButton: function() {
         this._gui_cancel_build.visible = false;
@@ -419,7 +500,7 @@ var BuildingNode = cc.Node.extend({
                     cf.current_r = self._row;
                     cf.current_c = self._col;
                     self.unlocate_map_array(cf.current_r, cf.current_c, size);
-                    return true
+                    return true;
                 }
                 else
                 {
@@ -437,11 +518,14 @@ var BuildingNode = cc.Node.extend({
                         self._col = cf.current_c;
                         self.x = cf.tileLocation[self._row][self._col].x;
                         self.y = cf.tileLocation[self._row][self._col].y - (size / 2) * cf.tileSize.height;
+                        self.locate_map_array(self);
+
                     }
                     else
                     {
                         self.unlocate_map_array(cf.current_r, cf.current_c, size);
                         self.locate_map_array(self);
+                        testnetwork.connector.sendMove(self._id, self._row, self._col);
                     }
                     return false;
                 }
@@ -451,7 +535,7 @@ var BuildingNode = cc.Node.extend({
             },
             onTouchMoved: function(touch, event)
             {
-                if (self._id != cf.building_selected) return;
+                if (self._id !== cf.building_selected) return;
                 //if (b.id != cf.building_selected) return;
                 var location_touch = touch.getLocation();
                 var tile_location = null;

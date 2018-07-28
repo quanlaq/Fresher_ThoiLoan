@@ -8,6 +8,7 @@ gv.CMD.USER_LOGIN = 1;
 
 gv.CMD.USER_INFO = 1001;
 gv.CMD.MOVE = 2001;
+gv.CMD.BUILD = 2010;
 
 testnetwork = testnetwork||{};
 testnetwork.packetMap = {};
@@ -63,6 +64,25 @@ CmdSendLogin = fr.OutPacket.extend(
     }
 )
 
+CmdSendBuild = fr.OutPacket.extend(
+    {
+        ctor:function()
+        {
+            this._super();
+            this.initData(100);
+            this.setCmdId(gv.CMD.BUILD);
+        },
+        pack:function(id, row, col){
+            cc.log(id + " " + row + " " + col)
+            this.packHeader();
+            this.putShort(id);
+            this.putShort(row);
+            this.putShort(col);
+            this.updateSize();
+        }
+    }
+);
+
 CmdSendMove = fr.OutPacket.extend(
     {
         ctor:function()
@@ -71,9 +91,11 @@ CmdSendMove = fr.OutPacket.extend(
             this.initData(100);
             this.setCmdId(gv.CMD.MOVE);
         },
-        pack:function(direction){
+        pack:function(id, row, col){
             this.packHeader();
-            this.putShort(direction);
+            this.putShort(id);
+            this.putShort(row);
+            this.putShort(col);
             this.updateSize();
         }
     }
@@ -117,192 +139,208 @@ testnetwork.packetMap[gv.CMD.USER_INFO] = fr.InPacket.extend
         },
         readData:function()
         {
-            this.townHall = new Object();
-            this.townHall.row = this.getByte();
-            this.townHall.col = this.getByte();
-            this.townHall.level = this.getByte();
-            this.townHall.finishBuildOrUpgradeTime = this.getLong();
+            /* Town Hall */
+            this.map = new Object();
+            this.map.TOW_1 = [];
+            this.map.TOW_1.push(new Object);
+            this.map.TOW_1[0].X = this.getByte();
+            this.map.TOW_1[0].Y = this.getByte();
+            this.map.TOW_1[0].level = this.getByte();
+            this.map.TOW_1[0].finishBuildOrUpgradeTime = this.getLong();
 
-            var Amount = this.getByte();//Amount of goldStorage
-            this.storage = new Object();
-            if (Amount > 0)
-                this.storage.gold = [];
+            /* Storage 1 */
+            var Amount = this.getByte();
+            this.map.STO_1 = [];
             for (i = 0; i < Amount; i += 1)
             {
-                this.storage.gold.push(new Object());
-                this.storage.gold[i].row = this.getByte();
-                this.storage.gold[i].col = this.getByte();
-                this.storage.gold[i].level = this.getByte();
-                this.storage.gold[i].finishBuildOrUpgradeTime = this.getLong();
-            }
-            Amount = this.getByte();//Amount of elixirStorage
-            if (Amount > 0)
-                this.storage.elixir = [];
-            for (i = 0; i < Amount; i += 1)
-            {
-                this.storage.elixir.push(new Object());
-                this.storage.elixir[i].row = this.getByte();
-                this.storage.elixir[i].col = this.getByte();
-                this.storage.elixir[i].level = this.getByte();
-                this.storage.elixir[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.STO_1.push(new Object());
+                this.map.STO_1[i].X = this.getByte();
+                this.map.STO_1[i].Y = this.getByte();
+                this.map.STO_1[i].level = this.getByte();
+                this.map.STO_1[i].finishBuildOrUpgradeTime = this.getLong();
             }
 
-            Amount = this.getByte();//Amount of darkElixirStorage
-            if (Amount > 0)
-                this.storage.darkElixir = [];
-            for (i = 0; i < Amount; i += 1)
-            {
-                this.storage.darkElixir.push(new Object());
-                this.storage.darkElixir[i].row = this.getByte();
-                this.storage.darkElixir[i].col = this.getByte();
-                this.storage.darkElixir[i].level = this.getByte();
-                this.storage.darkElixir[i].finishBuildOrUpgradeTime = this.getLong();
-            }
-
-            this.resource = new Object();
-            Amount = this.getByte();//Amount of goldResource
-            if (Amount > 0)
-                this.resource.gold = [];
-            for (i = 0; i < Amount; i += 1)
-            {
-                this.resource.gold.push(new Object());
-                this.resource.gold[i].row = this.getByte();
-                this.resource.gold[i].col = this.getByte();
-                this.resource.gold[i].level = this.getByte();
-                this.resource.gold[i].lastHarvestTime = this.getLong();
-            }
-            Amount = this.getByte();//Amount of elixirResource
-            if (Amount > 0)
-                this.resource.elixir = [];
-            for (i = 0; i < Amount; i += 1)
-            {
-                this.resource.elixir.push(new Object());
-                this.resource.elixir[i].row = this.getByte();
-                this.resource.elixir[i].col = this.getByte();
-                this.resource.elixir[i].level = this.getByte();
-                this.resource.elixir[i].lastHarvestTime = this.getLong();
-            }
-            Amount = this.getByte();//Amount of darkElixirResource
-            if (Amount > 0)
-                this.resource.darkElixir = [];
-            for (i = 0; i < Amount; i += 1)
-            {
-                this.resource.darkElixir.push(new Object());
-                this.resource.darkElixir[i].row = this.getByte();
-                this.resource.darkElixir[i].col = this.getByte();
-                this.resource.darkElixir[i].level = this.getByte();
-                this.resource.darkElixir[i].lastHarvestTime = this.getLong();
-            }
-
+            /* Storage 2 */
             Amount = this.getByte();
+            this.map.STO_2 = [];
+            for (i = 0; i < Amount; i += 1)
+            {
+                this.map.STO_2.push(new Object());
+                this.map.STO_2[i].X = this.getByte();
+                this.map.STO_2[i].Y = this.getByte();
+                this.map.STO_2[i].level = this.getByte();
+                this.map.STO_2[i].finishBuildOrUpgradeTime = this.getLong();
+            }
+
+            /* Storage 3 */
+            Amount = this.getByte();
+            this.map.STO_3 = [];
+            for (i = 0; i < Amount; i += 1)
+            {
+                this.map.STO_3.push(new Object());
+                this.map.STO_3[i].X = this.getByte();
+                this.map.STO_3[i].Y = this.getByte();
+                this.map.STO_3[i].level = this.getByte();
+                this.map.STO_3[i].finishBuildOrUpgradeTime = this.getLong();
+            }
+
+            /* Resource 1 */
+            Amount = this.getByte();
+            this.map.RES_1 = [];
+            for (i = 0; i < Amount; i += 1)
+            {
+                this.map.RES_1.push(new Object());
+                this.map.RES_1[i].X = this.getByte();
+                this.map.RES_1[i].Y = this.getByte();
+                this.map.RES_1[i].level = this.getByte();
+                this.map.RES_1[i].lastHarvestTime = this.getLong();
+            }
+
+            /* Resource 2 */
+            Amount = this.getByte();
+            this.map.RES_2 = [];
+            for (i = 0; i < Amount; i += 1)
+            {
+                this.map.RES_2.push(new Object());
+                this.map.RES_2[i].X = this.getByte();
+                this.map.RES_2[i].Y = this.getByte();
+                this.map.RES_2[i].level = this.getByte();
+                this.map.RES_2[i].lastHarvestTime = this.getLong();
+            }
+
+            /* Resource 3 */
+            Amount = this.getByte();
+            this.map.RES_3 = [];
+            for (i = 0; i < Amount; i += 1)
+            {
+                this.map.RES_3.push(new Object());
+                this.map.RES_3[i].X = this.getByte();
+                this.map.RES_3[i].Y = this.getByte();
+                this.map.RES_3[i].level = this.getByte();
+                this.map.RES_3[i].lastHarvestTime = this.getLong();
+            }
+
+            /* Laboratory 1 */
+            Amount = this.getByte();
+            this.map.LAB_1 = [];
             if (Amount > 0)
             {
-                this.laboratory = new Object();
-                this.laboratory.row = this.getByte();
-                this.laboratory.col = this.getByte();
-                this.laboratory.level = this.getByte();
-                this.laboratory.finishBuildOrUpgradeTime = this.getLong();
-                if(this.laboratory.finishBuildOrUpgradeTime == 0)
+                this.map.LAB_1.push(new Object());
+                this.map.LAB_1[0].row = this.getByte();
+                this.map.LAB_1[0].col = this.getByte();
+                this.map.LAB_1[0].level = this.getByte();
+                this.map.LAB_1[0].finishBuildOrUpgradeTime = this.getLong();
+                if(this.map.LAB_1[0].finishBuildOrUpgradeTime == 0)
                 {
-                    this.laboratory.finishResearchingTime = this.getLong();
-                    if(this.laboratory.finishResearchingTime > 0)
-                        this.laboratory.researchingTroop = this.getByte();
+                    this.map.LAB_1[0].finishResearchingTime = this.getLong();
+                    if(this.map.LAB_1[0].finishResearchingTime > 0)
+                        this.map.LAB_1[0].researchingTroop = this.getByte();
                 }
             }
 
-            Amount = this.getByte();//Amount of armyCamp
-            this.armyCamp = [];
+            /* Army Camp 1 */
+            Amount = this.getByte();
+            this.map.AMC_1 = [];
             for (i = 0; i < Amount; i += 1)
             {
-                this.armyCamp.push(new Object());
-                this.armyCamp[i].row = this.getByte();
-                this.armyCamp[i].col = this.getByte();
-                this.armyCamp[i].level = this.getByte();
-                this.armyCamp[i].finishBuildOrUpgradeTime = this.getLong();
+                this.map.AMC_1.push(new Object());
+                this.map.AMC_1[i].X = this.getByte();
+                this.map.AMC_1[i].Y = this.getByte();
+                this.map.AMC_1[i].level = this.getByte();
+                this.map.AMC_1[i].finishBuildOrUpgradeTime = this.getLong();
             }
 
+            /* Barrack 1 */
             Amount = this.getByte();//Amount of BAR_1
             if (Amount > 0)
-                this.normalBarrack = [];
+                this.map.BAR_1 = [];
             for (i = 0; i < Amount; i += 1)
             {
-                this.normalBarrack.push(new Object());
-                this.normalBarrack[i].row = this.getByte();
-                this.normalBarrack[i].col = this.getByte();
-                this.normalBarrack[i].level = this.getByte();
-                this.normalBarrack[i].finishBuildOrUpgradeTime = this.getLong();
-                if (this.normalBarrack[i].finishBuildOrUpgradeTime == 0)
+                this.map.BAR_1.push(new Object());
+                this.map.BAR_1[i].X = this.getByte();
+                this.map.BAR_1[i].Y = this.getByte();
+                this.map.BAR_1[i].level = this.getByte();
+                this.map.BAR_1[i].finishBuildOrUpgradeTime = this.getLong();
+                if (this.map.BAR_1[i].finishBuildOrUpgradeTime == 0)
                 {
-                    this.normalBarrack[i].startTrainingTime = this.getLong();
-                    if (this.normalBarrack[i].startTrainingTime > 0)
+                    this.map.BAR_1[i].startTrainingTime = this.getLong();
+                    if (this.map.BAR_1[i].startTrainingTime > 0)
                     {
                         var QueueSize = this.getByte();
-                        this.normalBarrack[i].trainingTroopTypes = []
-                        this.normalBarrack[i].trainingQueue = []
-                        for (i = 0; i < QueueSize; i += 1)
+                        this.map.BAR_1[i].trainingTroopTypes = []
+                        this.map.BAR_1[i].trainingQueue = []
+                        for (j = 0; j < QueueSize; j += 1)
                         {
-                            this.normalBarrack[i].trainingTroopTypes.push(this.getByte());
-                            this.normalBarrack[i].trainingQueue.push(this.getShort());
+                            this.map.BAR_1[i].trainingTroopTypes.push(this.getByte());
+                            this.map.BAR_1[i].trainingQueue.push(this.getShort());
                         }
                     }
                 }
             }
 
+            /* Barrack 2 */
             Amount = this.getByte();//Amount of BAR_2
             if (Amount > 0)
-                this.specialBarrack = [];
+                this.map.BAR_2 = [];
             for (i = 0; i < Amount; i += 1)
             {
-                this.specialBarrack.push(new Object());
-                this.specialBarrack[i].row = this.getByte();
-                this.specialBarrack[i].col = this.getByte();
-                this.specialBarrack[i].level = this.getByte();
-                this.specialBarrack[i].finishBuildOrUpgradeTime = this.getLong();
-                if (this.specialBarrack[i].finishBuildOrUpgradeTime == 0)
+                this.map.BAR_2.push(new Object());
+                this.map.BAR_2[i].X = this.getByte();
+                this.map.BAR_2[i].Y = this.getByte();
+                this.map.BAR_2[i].level = this.getByte();
+                this.map.BAR_2[i].finishBuildOrUpgradeTime = this.getLong();
+                if (this.map.BAR_2[i].finishBuildOrUpgradeTime == 0)
                 {
-                    this.specialBarrack[i].startTrainingTime = this.getLong();
-                    if (this.specialBarrack[i].startTrainingTime > 0)
+                    this.map.BAR_2[i].startTrainingTime = this.getLong();
+                    if (this.map.BAR_2[i].startTrainingTime > 0)
                     {
                         var QueueSize = this.getByte();
-                        this.specialBarrack[i].trainingTroopTypes = []
-                        this.specialBarrack[i].trainingQueue = []
-                        for (i = 0; i < QueueSize; i += 1)
+                        this.map.BAR_2[i].trainingTroopTypes = []
+                        this.map.BAR_2[i].trainingQueue = []
+                        for (j = 0; j < QueueSize; j += 1)
                         {
-                            this.specialBarrack[i].trainingTroopTypes.push(this.getByte());
-                            this.specialBarrack[i].trainingQueue.push(this.getShort());
+                            this.map.BAR_2[i].trainingTroopTypes.push(this.getByte());
+                            this.map.BAR_2[i].trainingQueue.push(this.getShort());
                         }
                     }
                 }
             }
 
+            /* Builder Hut 1 */
             Amount = this.getByte();//Amount of builderHut
-            this.builderHut = [];
+            this.map.BDH_1 = [];
             for (i = 0; i < Amount; i += 1)
             {
-                this.builderHut.push(new Object());
-                this.builderHut[i].row = this.getByte();
-                this.builderHut[i].col = this.getByte();
+                this.map.BDH_1.push(new Object());
+                this.map.BDH_1[i].X = this.getByte();
+                this.map.BDH_1[i].Y = this.getByte();
             }
 
-            //player
-            this.name = this.getString();
-            this.exp = this.getInt();
-            this.vipPoint = this.getInt();
+            /* Player */
+            this.player = new Object();
+            this.player.name = this.getString();
+            this.player.exp = this.getInt();
+            this.player.vipPoint = this.getInt();
 
-            this.coin = this.getInt();
-            this.gold = this.getInt();
-            this.elixir = this.getInt();
-            this.darkElixir = this.getInt();
+            this.player.coin = this.getInt();
+            this.player.gold = this.getInt();
+            this.player.elixir = this.getInt();
+            this.player.darkElixir = this.getInt();
 
-            this.troopLevel = [];
-            this.troopAmount = [];
+            this.player.troopLevel = [];
+            this.player.troopAmount = [];
             for (i = 0; i < 18; i += 1)
             {
-                this.troopLevel.push(this.getByte());
-                this.troopAmount.push(this.getShort());
+                this.player.troopLevel.push(this.getByte());
+                this.player.troopAmount.push(this.getShort());
             }
 
-            cc.log(JSON.stringify(this));
+            // cc.log(JSON.stringify(this));
+            gv.jsonInfo = this;
+            //cc.log(gv.jsonInfo["map"]["TOW_1"][0]["X"]);
+            //cc.log(gv.jsonInfo["map"]["TOW_1"].length);
+            //cc.log(gv.jsonInfo["map"]["BDH_1"].length);
+            //cc.log(gv.jsonInfo["map"]["STO_1"].length);
         }
     }
 );

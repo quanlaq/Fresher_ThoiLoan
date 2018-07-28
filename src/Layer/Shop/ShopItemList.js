@@ -5,6 +5,12 @@ var ShopItemList = cc.Layer.extend({
     _swallowTouch: null,
     _shopName: null,
     _scrollView: null,
+    _resourceBackground: null,
+    _resGold: null,
+    _resElixir: null,
+    _resDarkELixir: null,
+    _resCoin: null,
+
     ctor: function(tag){
         this._super();
         this._shopName = cf.shopTagToName(tag);
@@ -76,7 +82,36 @@ var ShopItemList = cc.Layer.extend({
             }
         }, this);
 
+        /* Resource Bar */
+        var dis = cc.winSize.width / 5;
+        this._resourceBackground = cc.Sprite(shopGUI.resInfo);
+        this._resourceBackground.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resourceBackground.scale = 1.6;
+        this._resourceBackground.setPosition(cc.p(cc.winSize.width/2, this._resourceBackground.height /2 * this._resourceBackground.scale));
+        this.addChild(this._resourceBackground, 0);
 
+        this._resGold = new ResourceItem(cf.shopResourceItem.ResGold);
+        this._resGold.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resGold.setPosition(dis, this._resourceBackground.y);
+
+        this._resElixir = new ResourceItem(cf.shopResourceItem.ResElixir);
+        this._resElixir.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resElixir.setPosition(dis * 2, this._resourceBackground.y);
+
+        this._resDarkELixir = new ResourceItem(cf.shopResourceItem.ResDarkElixir);
+        this._resDarkELixir.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resDarkELixir.setPosition(dis * 3, this._resourceBackground.y);
+
+        this._resCoin = new ResourceItem(cf.shopResourceItem.ResCoin);
+        this._resCoin.setAnchorPoint(cc.p(0.5, 0.5));
+        this._resCoin.setPosition(dis * 2, this._resourceBackground.y);
+
+        this.addChild(this._resGold, 1);
+        this.addChild(this._resElixir, 1);
+        this.addChild(this._resDarkELixir, 1);
+        // this.addChild(this._resCoin, 1);
+
+        /* Close */
         this._titleBackground.addChild(close);
         this.addChild(this._titleBackground);
         this.addChild(color, -1);
@@ -101,20 +136,20 @@ var ShopItemList = cc.Layer.extend({
         this._scrollView.setBounceEnabled(true);
         this._scrollView.setAnchorPoint(cc.p(0.5, 0.5));
         this._scrollView.setContentSize(cc.size(item.width*item.scale, item.height*item.scale));
-        this._scrollView.setInnerContainerSize(cc.size(item.width*item.scale * cf.ShopItemList["ShopList"][this._shopName].length, item.height*item.scale));
+        this._scrollView.setInnerContainerSize(cc.size(item.width*item.scale * gv.json.shopItemList["ShopList"][this._shopName].length, item.height*item.scale));
         this._scrollView.setAnchorPoint(cc.p(0, 0));
         this._scrollView.setPosition(cc.p(25, cc.winSize.height/2 - item.height*item.scale/2));
 
-        var shopItem = [];
-        for(var i=0; i<cf.ShopItemList["ShopList"][this._shopName].length; i++) {
-            shopItem.push(new ShopItem(this._shopName, i));
+        this.shopItem = [];
+        for(var i=0; i<gv.json.shopItemList["ShopList"][this._shopName].length; i++) {
+            this.shopItem.push(new ShopItem(this._shopName, i));
         }
-        for(var j =0 ; j<shopItem.length; j++){
+        for(var j=0 ; j<this.shopItem.length; j++){
             // cc.log(shopItem[j]._itemName);
-            shopItem[j].scale = 1.5;
-            this._scrollView.addChild(shopItem[j]);
-            shopItem[j].setAnchorPoint(cc.p(0.5, 0.5));
-            shopItem[j].setPosition(cc.p((j+0.5) * item.width * item.scale, this._scrollView.height/2));
+            this.shopItem[j].scale = 1.5;
+            this._scrollView.addChild(this.shopItem[j]);
+            this.shopItem[j].setAnchorPoint(cc.p(0.5, 0.5));
+            this.shopItem[j].setPosition(cc.p((j+0.5) * item.width * item.scale, this._scrollView.height/2));
         }
         this.addChild(this._scrollView);
         this._scrollView.width = cc.winSize.width;
@@ -122,8 +157,16 @@ var ShopItemList = cc.Layer.extend({
 
     },
 
+    updateStatus: function() {
+
+        for(var j = 0; j < this.shopItem.length; j++) {
+            this.shopItem[j].updateStatus();
+        }
+    },
+
     onAppear: function(){
         this.visible = true;
+        this.updateStatus();
         this._swallowTouch.setEnabled(true);
     },
 

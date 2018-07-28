@@ -28,6 +28,8 @@ var res = {
     townHallJson: jsonFolder + "TownHall.json",
     troopJson: jsonFolder + "Troop.json",
     troopBaseJson: jsonFolder + "TroopBase.json",
+    obstacleJson: jsonFolder + "Obstacle.json",
+    shopItemList: jsonFolder + "ShopList.json",
 
     folder_builder_hut: buildingsFolder + "builder hut/",
     folder_army_camp: buildingsFolder + "army camp/",
@@ -58,6 +60,11 @@ var font = {
     soji20: fontFolder + "soji_20.fnt"
 
 };
+
+res.buildingOnMoveGUI = function(type, size)
+{
+    return res.map_BG + type + "_" + (size ) + ".png"
+}
 
 var shopGUI = {
     back:               guiFolder + "shop_gui/back.png",
@@ -122,8 +129,12 @@ var mainGUI = {
 var buildingGUI = {
     iconInfo : folderBuildingActionicon + "info_icon.png",
     iconUpgrade: folderBuildingActionicon + "upgrade_icon.png",
-    bg: folderBuildingActionicon + "bg_button.png"
-}
+    bg: folderBuildingActionicon + "bg_button.png",
+
+    buildCommit: res.folder_gui_action_building + "accept.png",
+    buildCancel: res.folder_gui_action_building + "cancel.png",
+    defence: res.map_obj + "upgrading.png",
+};
 var g_preload= [
     res.tilemap_tmx,
     res.bgBotLeft,

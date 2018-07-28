@@ -1,10 +1,12 @@
+/**
+ * Created by CPU02326_Local on 7/23/2018.
+ */
 var IconActionBuilding = ccui.Button.extend({
     _type: null,
     _txt: null,
 
     ctor: function(type)
     {
-        this._type = type;
         switch(type)
         {
             case cf.CODE_BUILDING_INFO: this._super((buildingGUI.iconInfo));
@@ -32,24 +34,22 @@ var IconActionBuilding = ccui.Button.extend({
 
     },
 
-    logFunc: function() {
-        if(this._type === cf.CODE_BUILDING_UPGRADE) cc.log("Upgrade this building : " + cf.building_selected);
-        else cc.log("Show info : " + cf.building_selected);
-    },
-
     updateBuilding: function(sender, type) {
         switch (type){
             case ccui.Widget.TOUCH_BEGAN:
-                this.logFunc();
                 sender.setScale(sender.scale*1.02);
+                cc.log("Upgrade this building : " + cf.building_selected);
                 break;
             case ccui.Widget.TOUCH_MOVED:
+                cc.log("moved");
                 break;
             case ccui.Widget.TOUCH_ENDED:
                 sender.setScale(sender.scale/1.02);
+                cc.log("ended");
                 break;
             case ccui.Widget.TOUCH_CANCELED:
                 sender.setScale(sender.scale/1.02);
+                cc.log("canceled");
                 break;
         }
     }
